@@ -14,11 +14,9 @@ const App = () => {
   return (
     <div>
       <Header title="Give feedback" />
-      <Button handleClick={() => setGood(good => (good += 1))}>good</Button>
-      <Button handleClick={() => setNeutral(good => (good += 1))}>
-        neutral
-      </Button>
-      <Button handleClick={() => setBad(good => (good += 1))}>bad</Button>
+      <Button handleClick={() => setGood(good + 1)}>good</Button>
+      <Button handleClick={() => setNeutral(neutral + 1)}>neutral</Button>
+      <Button handleClick={() => setBad(bad + 1)}>bad</Button>
 
       <Header level="h2" title="Statistics" />
       <Statistics data={data} />
