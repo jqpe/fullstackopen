@@ -36,9 +36,10 @@ const App = () => {
 
 function StatisticLine({ title, value }) {
   return (
-    <p>
-      {title} {value}
-    </p>
+    <tr>
+      <td>{title}</td>
+      <td>{value}</td>
+    </tr>
   )
 }
 
@@ -52,15 +53,17 @@ function Statistics({ data }) {
   const positive = (good / sum) * 100 || 0
 
   return (
-    <>
-      {data.map(row => (
-        <StatisticLine key={row.title} title={row.title} value={row.value} />
-      ))}
+    <table>
+      <tbody>
+        {data.map(row => (
+          <StatisticLine key={row.title} title={row.title} value={row.value} />
+        ))}
 
-      <StatisticLine title="all" value={sum} />
-      <StatisticLine title="average" value={average} />
-      <StatisticLine title="positive" value={`${positive} %`} />
-    </>
+        <StatisticLine title="all" value={sum} />
+        <StatisticLine title="average" value={average} />
+        <StatisticLine title="positive" value={`${positive} %`} />
+      </tbody>
+    </table>
   )
 }
 
