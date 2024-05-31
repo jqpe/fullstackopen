@@ -12,8 +12,14 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
 
+  const [score, setScore] = useState(Array(anecdotes.length).fill(0))
   const [selected, setSelected] = useState(0)
 
+  const incrementScore = () => {
+    const copy = [...score]
+    copy[selected] += 1
+    setScore(copy)
+  }
   const randomAnecdote = () => {
     const randomIndex = Math.floor(Math.random() * anecdotes.length)
 
@@ -23,6 +29,8 @@ const App = () => {
   return (
     <div>
       <p>{anecdotes[selected]}</p>
+      <p>has {score[selected]} votes</p>
+      <button onClick={incrementScore}>vote</button>
       <button onClick={randomAnecdote}>next anecdote</button>
     </div>
   )
