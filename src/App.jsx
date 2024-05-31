@@ -1,9 +1,20 @@
 import { useEffect, useState } from 'react'
 import personService from './services/person'
 
+import './App.css'
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
+  const [notification, setNotification] = useState(null)
+
+  const showNotification = (message, variant) => {
+    setNotification({ message, variant: variant ?? 'success' })
+
+    setTimeout(() => {
+      setNotification(null)
+    }, 3000)
+  }
 
   useEffect(() => {
     personService.getAll().then(res => setPersons(res.data))
@@ -25,20 +36,30 @@ const App = () => {
       )
     ) {
       const updatedPerson = { ...phonebookPerson, ...person }
-      personService.update(updatedPerson).then(() => {
-        const copy = [...persons]
-        const index = copy.findIndex(({ id }) => id === updatedPerson.id)
+      personService
+        .update(updatedPerson)
+        .then(() => {
+          const copy = [...persons]
+          const index = copy.findIndex(({ id }) => id === updatedPerson.id)
 
-        copy[index] = updatedPerson
+          copy[index] = updatedPerson
 
-        setPersons(copy)
-      })
+          setPersons(copy)
+        })
+        .then(showNotification(`Updated ${person.name}`))
+        .catch(() => {
+          showNotification(
+            `Can not update. Information of ${person.name} has been removed from the server`,
+            'error'
+          )
+        })
       return
     }
 
     personService
       .create(person)
       .then(res => setPersons(persons.concat(res.data)))
+      .then(() => showNotification(`Added ${person.name}`))
   }
 
   const handleDelete = person => {
@@ -46,12 +67,22 @@ const App = () => {
       personService
         .remove(person.id)
         .then(res => setPersons(persons.filter(({ id }) => id !== res.data.id)))
+        .catch(() => {
+          showNotification(
+            `Information of ${person.name} has already been removed from the server`,
+            'error'
+          )
+        })
     }
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification
+        message={notification?.message ?? null}
+        variant={notification?.variant}
+      />
       <Filter handleChange={e => setSearchQuery(e.currentTarget.value)} />
 
       <h2>add new</h2>
@@ -60,6 +91,14 @@ const App = () => {
       <Persons persons={shownPersons} handleDelete={handleDelete} />
     </div>
   )
+}
+
+function Notification({ message, variant }) {
+  if (message === null) {
+    return null
+  }
+
+  return <div className={variant}>{message}</div>
 }
 
 function PersonForm({ handleSubmit }) {
