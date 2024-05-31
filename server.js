@@ -27,7 +27,19 @@ let persons = [
 ]
 
 app.use(express.json())
-app.use(morgan('tiny'))
+
+// if token is falsy morgan prints out - for all requests (i.e. GET requests as well)
+// we could write some spaghetti to work around this, but nah
+morgan.token('body', req => {
+  return req.method === 'POST' && JSON.stringify(req.body)
+})
+
+// morgan does not export the tiny configuration anywhere so hard-code it.
+// see https://github.com/expressjs/morgan/blob/c68d2eab4c6a5d9940895a6d1614964d44358642/index.js#L177
+// there doesn't seem to be a way to extend the predefined formats
+const tiny = ':method :url :status :res[content-length] - :response-time ms'
+
+app.use(morgan(`${tiny} :body`))
 
 app.get('/api/persons', (_, res) => res.json(persons))
 app.get('/api/persons/:id', (req, res) => {
@@ -46,7 +58,7 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 app.post('/api/persons', (req, res) => {
-  const person = req.body
+  const person = { ...req.body }
 
   if (!person) {
     res.status(400).json({ error: 'body must not be empty' }).end()
