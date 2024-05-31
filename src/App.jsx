@@ -1,14 +1,11 @@
-import { useState } from 'react'
-import axios from 'axios'
-import { useEffect } from 'react'
-
-const API_ENDPOINT = 'http://localhost:3001/persons'
+import { useEffect, useState } from 'react'
+import personService from './services/person'
 
 const App = () => {
   const [persons, setPersons] = useState([])
 
   useEffect(() => {
-    axios.get(API_ENDPOINT).then(res => setPersons(res.data))
+    personService.getAll().then(res => setPersons(res.data))
   }, [])
 
   const [searchQuery, setSearchQuery] = useState('')
@@ -20,8 +17,8 @@ const App = () => {
     : persons
 
   const onSubmit = person => {
-    axios
-      .post(API_ENDPOINT, person)
+    personService
+      .create(person)
       .then(res => setPersons(persons.concat(res.data)))
   }
 
