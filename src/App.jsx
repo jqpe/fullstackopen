@@ -33,11 +33,23 @@ function StatisticsRow({ title, value }) {
 }
 
 function Statistics({ data }) {
+  const [good, neutral, bad] = [data[0].value, data[1].value, data[2].value]
+
+  const sum = good + neutral + bad
+  // where good = 1 point, neutral = 0 points and bad = -1 points
+  const score = good - bad
+  const average = score / sum || 0
+  const positive = (good / sum) * 100 || 0
+
   return (
     <>
-      <StatisticsRow title={data[0].title} value={data[0].value} />
-      <StatisticsRow title={data[1].title} value={data[1].value} />
-      <StatisticsRow title={data[2].title} value={data[2].value} />
+      {data.map(row => (
+        <StatisticsRow key={row.title} title={row.title} value={row.value} />
+      ))}
+
+      <StatisticsRow title="all" value={sum} />
+      <StatisticsRow title="average" value={average} />
+      <StatisticsRow title="positive" value={`${positive} %`} />
     </>
   )
 }
