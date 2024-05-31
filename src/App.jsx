@@ -1,5 +1,13 @@
 import { useState } from 'react'
 
+const sum = (...values) => {
+  return values.reduce((prev, curr) => prev + curr, 0)
+}
+/**
+ * @alias sum
+ */
+const calculateSum = sum
+
 const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
@@ -11,6 +19,8 @@ const App = () => {
     { title: 'bad', value: bad }
   ]
 
+  const hasEnteredInput = sum(data[0].value, data[1].value, data[2].value) > 0
+
   return (
     <div>
       <Header title="Give feedback" />
@@ -19,7 +29,7 @@ const App = () => {
       <Button handleClick={() => setBad(bad + 1)}>bad</Button>
 
       <Header level="h2" title="Statistics" />
-      <Statistics data={data} />
+      {hasEnteredInput ? <Statistics data={data} /> : 'No feedback given'}
     </div>
   )
 }
@@ -35,7 +45,7 @@ function StatisticsRow({ title, value }) {
 function Statistics({ data }) {
   const [good, neutral, bad] = [data[0].value, data[1].value, data[2].value]
 
-  const sum = good + neutral + bad
+  const sum = calculateSum(good, neutral, bad)
   // where good = 1 point, neutral = 0 points and bad = -1 points
   const score = good - bad
   const average = score / sum || 0
