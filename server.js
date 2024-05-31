@@ -24,6 +24,20 @@ const persons = [
 ]
 
 app.get('/api/persons', (_, res) => res.json(persons))
+app.get('/api/persons/:id', (req, res) => {
+  const { id } = req.params
+
+  try {
+    const person = persons.find(person => person.id == id)
+
+    if (person) {
+      return res.json(person)
+    }
+  } catch {}
+
+  res.status(404)
+  res.end()
+})
 app.get('/info', (_, res) => {
   // minimal valid html according to w3
   const html = `<!doctype html>
