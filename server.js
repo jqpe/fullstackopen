@@ -45,6 +45,27 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const person = req.body
+
+  if (!person) {
+    res.status(400).json({ error: 'body must not be empty' }).end()
+    return
+  }
+
+  if (!('number' in person)) {
+    res.status(400).json({ error: 'number must be in body' }).end()
+    return
+  }
+
+  if (!('name' in person)) {
+    res.status(400).json({ error: 'name must be in body' }).end()
+    return
+  }
+
+  if (persons.includes(person.name)) {
+    res.status(400).json({ error: 'name is already in phonebook' }).end()
+    return
+  }
+
   person.id = Math.random() * 100
 
   persons = persons.concat(person)
