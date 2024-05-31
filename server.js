@@ -1,6 +1,8 @@
-const app = require('express')()
+const express = require('express')
 
-const persons = [
+const app = express()
+
+let persons = [
   {
     id: 1,
     name: 'Arto Hellas',
@@ -23,6 +25,8 @@ const persons = [
   }
 ]
 
+app.use(express.json())
+
 app.get('/api/persons', (_, res) => res.json(persons))
 app.get('/api/persons/:id', (req, res) => {
   const { id } = req.params
@@ -38,6 +42,23 @@ app.get('/api/persons/:id', (req, res) => {
   res.status(404)
   res.end()
 })
+
+app.post('/api/persons', (req, res) => {
+  const person = req.body
+  person.id = Math.random() * 100
+
+  persons = persons.concat(person)
+
+  res.status(201).end()
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  persons = persons.filter(person => person.id != id)
+
+  res.status(204).end()
+})
+
 app.get('/info', (_, res) => {
   // minimal valid html according to w3
   const html = `<!doctype html>
