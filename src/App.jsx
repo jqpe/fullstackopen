@@ -5,6 +5,7 @@ import countriesService from './services/countries'
 export default function App() {
   const [searchQuery, setSearchQuery] = useState('')
   const [countries, setCountries] = useState([])
+  const [country, setCountry] = useState(null)
 
   useEffect(() => {
     countriesService.getAll().then(res => setCountries(res.data))
@@ -14,20 +15,35 @@ export default function App() {
     new RegExp(searchQuery, 'gi').test(country.name.common)
   )
 
-  console.log(countries)
+  const onCountryClick = ccn3 => {
+    setCountry(countries.find(country => country.ccn3 === ccn3))
+  }
 
   return (
     <div>
       <div>
         find countries:{' '}
-        <input onChange={e => setSearchQuery(e.currentTarget.value)} />
+        <input
+          onChange={e => {
+            setCountry(null)
+            setSearchQuery(e.currentTarget.value)
+          }}
+        />
       </div>
-      <SearchResults searchResults={searchResults} />
+      {country ? (
+        <Country country={country} />
+      ) : (
+        <SearchResults
+          shownCountry={country}
+          searchResults={searchResults}
+          handleCountryClick={onCountryClick}
+        />
+      )}
     </div>
   )
 }
 
-function SearchResults({ searchResults }) {
+function SearchResults({ searchResults, handleCountryClick }) {
   if (searchResults.length > 10) {
     return 'Too many matches, specify another filter'
   }
@@ -36,7 +52,12 @@ function SearchResults({ searchResults }) {
     return (
       <ul>
         {searchResults.map(country => (
-          <li key={country.fifa}>{country.name.common}</li>
+          <li key={country.ccn3}>
+            {country.name.common}{' '}
+            <button onClick={() => handleCountryClick(country.ccn3)}>
+              show
+            </button>
+          </li>
         ))}
       </ul>
     )
@@ -54,14 +75,16 @@ function Country({ country }) {
     <article>
       <h1>{country.name.common}</h1>
       <table>
-        <tr>
-          <td>capital</td>
-          <td>{country.capital.at(0)}</td>
-        </tr>
-        <tr>
-          <td>area</td>
-          <td>{country.area}</td>
-        </tr>
+        <tbody>
+          <tr>
+            <td>capital</td>
+            <td>{country.capital.at(0)}</td>
+          </tr>
+          <tr>
+            <td>area</td>
+            <td>{country.area}</td>
+          </tr>
+        </tbody>
       </table>
 
       <b>languages:</b>
