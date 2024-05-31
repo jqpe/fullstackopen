@@ -13,13 +13,13 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  const data = [
-    { title: 'good', value: good },
-    { title: 'neutral', value: neutral },
-    { title: 'bad', value: bad }
-  ]
+  const data = {
+    good,
+    neutral,
+    bad
+  }
 
-  const hasEnteredInput = sum(data[0].value, data[1].value, data[2].value) > 0
+  const hasEnteredInput = sum(data.good, data.neutral, data.bad) > 0
 
   return (
     <div>
@@ -44,7 +44,7 @@ function StatisticLine({ title, value }) {
 }
 
 function Statistics({ data }) {
-  const [good, neutral, bad] = [data[0].value, data[1].value, data[2].value]
+  const { good, neutral, bad } = data
 
   const sum = calculateSum(good, neutral, bad)
   // where good = 1 point, neutral = 0 points and bad = -1 points
@@ -55,8 +55,8 @@ function Statistics({ data }) {
   return (
     <table>
       <tbody>
-        {data.map(row => (
-          <StatisticLine key={row.title} title={row.title} value={row.value} />
+        {Object.keys(data).map(title => (
+          <StatisticLine key={title} title={title} value={data[title]} />
         ))}
 
         <StatisticLine title="all" value={sum} />
