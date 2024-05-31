@@ -1,10 +1,18 @@
 import { useState } from 'react'
+import axios from 'axios'
+import { useEffect } from 'react'
+
+const API_BASE = 'http://localhost:3001'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' },
-    { name: 'Minna Mansikka' }
-  ])
+  const [persons, setPersons] = useState([])
+
+  useEffect(() => {
+    const res = axios.get(new URL('/persons', API_BASE))
+    res.then(({ data }) => {
+      setPersons(data)
+    })
+  }, [])
 
   const [searchQuery, setSearchQuery] = useState('')
 
