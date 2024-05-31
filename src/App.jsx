@@ -2,16 +2,13 @@ import { useState } from 'react'
 import axios from 'axios'
 import { useEffect } from 'react'
 
-const API_BASE = 'http://localhost:3001'
+const API_ENDPOINT = 'http://localhost:3001/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
 
   useEffect(() => {
-    const res = axios.get(new URL('/persons', API_BASE))
-    res.then(({ data }) => {
-      setPersons(data)
-    })
+    axios.get(API_ENDPOINT).then(res => setPersons(res.data))
   }, [])
 
   const [searchQuery, setSearchQuery] = useState('')
@@ -22,16 +19,19 @@ const App = () => {
       })
     : persons
 
+  const onSubmit = person => {
+    axios
+      .post(API_ENDPOINT, person)
+      .then(res => setPersons(persons.concat(res.data)))
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter handleChange={e => setSearchQuery(e.currentTarget.value)} />
 
       <h2>add new</h2>
-      <PersonForm
-        persons={persons}
-        handleSubmit={newPerson => setPersons([...persons, newPerson])}
-      />
+      <PersonForm persons={persons} handleSubmit={onSubmit} />
       <h2>Numbers</h2>
       <Persons persons={shownPersons} />
     </div>
