@@ -22,6 +22,14 @@ const App = () => {
       .then(res => setPersons(persons.concat(res.data)))
   }
 
+  const handleDelete = person => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService
+        .remove(person.id)
+        .then(res => setPersons(persons.filter(({ id }) => id !== res.data.id)))
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -30,7 +38,7 @@ const App = () => {
       <h2>add new</h2>
       <PersonForm persons={persons} handleSubmit={onSubmit} />
       <h2>Numbers</h2>
-      <Persons persons={shownPersons} />
+      <Persons persons={shownPersons} handleDelete={handleDelete} />
     </div>
   )
 }
@@ -76,23 +84,30 @@ function Filter({ handleChange }) {
   )
 }
 
-function Persons({ persons }) {
+function Persons({ persons, handleDelete }) {
   return (
     <table>
       <tbody>
         {persons.map(person => (
-          <Person key={person.name} person={person} />
+          <Person
+            key={person.name}
+            person={person}
+            handleDelete={handleDelete}
+          />
         ))}
       </tbody>
     </table>
   )
 }
 
-function Person({ person }) {
+function Person({ person, handleDelete }) {
   return (
     <tr>
       <td>{person.name}</td>
       <td>{person.number}</td>
+      <td>
+        <button onClick={() => handleDelete(person)}>delete</button>
+      </td>
     </tr>
   )
 }

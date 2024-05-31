@@ -9,6 +9,10 @@ export const create = newObject => {
   return axios.post(API_ENDPOINT, newObject)
 }
 
-const personService = { getAll, create }
+export const remove = id => {
+  return axios.delete([API_ENDPOINT, id].join('/'))
+}
+
+const personService = { getAll, create, remove }
 
 export default personService
