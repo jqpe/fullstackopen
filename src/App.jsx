@@ -26,13 +26,30 @@ const App = () => {
     setSelected(randomIndex)
   }
 
+  const bestScore = [...score].sort().at(-1)
+  const bestAnecdoteIndex = score.findIndex(s => s === bestScore)
+
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>has {score[selected]} votes</p>
+      <h1>Anecdote of the day</h1>
+      <Anecdote title={anecdotes[selected]} votes={score[selected]} />
       <button onClick={incrementScore}>vote</button>
       <button onClick={randomAnecdote}>next anecdote</button>
+      <h2>Anecdote with most votes</h2>
+      <Anecdote
+        title={anecdotes[bestAnecdoteIndex]}
+        votes={score[bestAnecdoteIndex]}
+      />
     </div>
+  )
+}
+
+function Anecdote({ votes, title }) {
+  return (
+    <>
+      <p>{title}</p>
+      <p>has {votes} votes</p>
+    </>
   )
 }
 
