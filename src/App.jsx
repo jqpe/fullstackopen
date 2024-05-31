@@ -34,7 +34,7 @@ const App = () => {
   )
 }
 
-function StatisticsRow({ title, value }) {
+function StatisticLine({ title, value }) {
   return (
     <p>
       {title} {value}
@@ -54,12 +54,12 @@ function Statistics({ data }) {
   return (
     <>
       {data.map(row => (
-        <StatisticsRow key={row.title} title={row.title} value={row.value} />
+        <StatisticLine key={row.title} title={row.title} value={row.value} />
       ))}
 
-      <StatisticsRow title="all" value={sum} />
-      <StatisticsRow title="average" value={average} />
-      <StatisticsRow title="positive" value={`${positive} %`} />
+      <StatisticLine title="all" value={sum} />
+      <StatisticLine title="average" value={average} />
+      <StatisticLine title="positive" value={`${positive} %`} />
     </>
   )
 }
