@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useState } from 'react'
 import countriesService from './services/countries'
+import weatherService from './services/weather'
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -40,6 +41,47 @@ export default function App() {
         />
       )}
     </div>
+  )
+}
+
+function Weather({ country }) {
+  const [weather, setWeather] = useState(null)
+
+  useEffect(() => {
+    const [lat, lon] = country.latlng
+
+    weatherService
+      .getWeather({
+        lat,
+        lon
+      })
+      .then(res => setWeather(res.data))
+  }, [country.latlng])
+
+  if (!('VITE_WEATHER_KEY' in import.meta.env)) {
+    console.error(
+      'Weather API key was not specified, weather functionality is disabled'
+    )
+    return null
+  }
+
+  if (!weather) {
+    return 'loading weather...'
+  }
+
+  const weatherIcon = weather.weather[0]
+
+  return (
+    <article>
+      <h2>Weather in {country.capital.at(0)}</h2>
+      <p>temperature {weather.main.temp} Celsius</p>
+
+      <img
+        src={`https://openweathermap.org/img/wn/${weatherIcon.icon}@2x.png`}
+        alt={weatherIcon.description}
+      />
+      <p>wind {weather.wind.speed} m/s</p>
+    </article>
   )
 }
 
@@ -99,6 +141,8 @@ function Country({ country }) {
         alt={`Flag of ${country.name.common}`}
         style={{ maxHeight: 100, boxShadow: '1 1 2 black' }}
       />
+
+      <Weather country={country} />
     </article>
   )
 }
