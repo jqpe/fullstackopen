@@ -3,12 +3,11 @@ import personService from './services/person'
 
 const App = () => {
   const [persons, setPersons] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     personService.getAll().then(res => setPersons(res.data))
   }, [])
-
-  const [searchQuery, setSearchQuery] = useState('')
 
   const shownPersons = searchQuery
     ? persons.filter(({ name }) => {
@@ -17,6 +16,26 @@ const App = () => {
     : persons
 
   const onSubmit = person => {
+    const phonebookPerson = persons.find(({ name }) => name === person.name)
+
+    if (
+      phonebookPerson &&
+      window.confirm(
+        `${person.name} is already added to phonebook, replace the old number with a new one?`
+      )
+    ) {
+      const updatedPerson = { ...phonebookPerson, ...person }
+      personService.update(updatedPerson).then(() => {
+        const copy = [...persons]
+        const index = copy.findIndex(({ id }) => id === updatedPerson.id)
+
+        copy[index] = updatedPerson
+
+        setPersons(copy)
+      })
+      return
+    }
+
     personService
       .create(person)
       .then(res => setPersons(persons.concat(res.data)))
@@ -36,27 +55,21 @@ const App = () => {
       <Filter handleChange={e => setSearchQuery(e.currentTarget.value)} />
 
       <h2>add new</h2>
-      <PersonForm persons={persons} handleSubmit={onSubmit} />
+      <PersonForm handleSubmit={onSubmit} />
       <h2>Numbers</h2>
       <Persons persons={shownPersons} handleDelete={handleDelete} />
     </div>
   )
 }
 
-function PersonForm({ persons, handleSubmit }) {
+function PersonForm({ handleSubmit }) {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
   return (
     <form
-      // Too much abstraction?
       onSubmit={e => {
         e.preventDefault()
-
-        if (persons.some(({ name }) => name === newName)) {
-          alert(`${newName} is already added to phonebook`)
-          return
-        }
 
         handleSubmit({ name: newName, number: newNumber })
       }}

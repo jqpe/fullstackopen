@@ -13,6 +13,10 @@ export const remove = id => {
   return axios.delete([API_ENDPOINT, id].join('/'))
 }
 
-const personService = { getAll, create, remove }
+export const update = person => {
+  return axios.put([API_ENDPOINT, person.id].join('/'), person)
+}
+
+const personService = { getAll, create, remove, update }
 
 export default personService
