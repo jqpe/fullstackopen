@@ -24,6 +24,22 @@ const persons = [
 ]
 
 app.get('/api/persons', (_, res) => res.json(persons))
+app.get('/info', (_, res) => {
+  // minimal valid html according to w3
+  const html = `<!doctype html>
+  <html lang="en">
+    <head>
+    <title>info</title>
+    </head>
+    <body>
+      <p>Phonebook has info for ${persons.length} people</p>
+      <p>${new Date().toISOString()}</p>
+    </body>
+  </html>
+  `
+
+  res.send(html)
+})
 
 const PORT = 3001
 app.listen(PORT, () => {
