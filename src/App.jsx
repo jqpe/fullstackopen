@@ -1,10 +1,5 @@
 import { useState } from 'react'
 
-// TODO: phone number so it's unique(ish)
-const getUniqueId = person => {
-  return person.name
-}
-
 const App = () => {
   const [persons, setPersons] = useState([{ name: 'Arto Hellas' }])
   const [newName, setNewName] = useState('')
@@ -15,6 +10,12 @@ const App = () => {
       <form
         onSubmit={e => {
           e.preventDefault()
+
+          if (persons.some(({ name }) => name === newName)) {
+            alert(`${newName} is already added to phonebook`)
+            return
+          }
+
           setPersons([...persons, { name: newName }])
         }}
       >
@@ -27,7 +28,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       {persons.map(person => (
-        <p key={getUniqueId(person)}>{person.name}</p>
+        <p key={person.name}>{person.name}</p>
       ))}
     </div>
   )
