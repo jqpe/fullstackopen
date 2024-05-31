@@ -1,12 +1,9 @@
-# Full stack open
+# Anecdotes
 
-This repository is structured with branches. E.g.
+To start with local development:
 
-```sh
-part-0
-part-1
-    course-info
-    unicafe
-```
+1. Enable [corepack](https://github.com/nodejs/corepack?tab=readme-ov-file#-corepack)
+2. Run `corepack install`
+3. Run `pnpm install`
 
-You can use `git branch` to list the branches or GUI like GitHub's.
+Start the development server with `pnpm dev`.
