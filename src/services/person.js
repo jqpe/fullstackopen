@@ -1,7 +1,8 @@
 import axios from 'axios'
 
-// eslint-disable-next-line no-undef
-const API_ENDPOINT = `http://localhost:${process.env.PORT}/api/persons`
+const API_ENDPOINT = import.meta.env.PROD
+  ? '/api/persons'
+  : `http://localhost:3001/api/persons`
 
 export const getAll = () => {
   return axios.get(API_ENDPOINT)

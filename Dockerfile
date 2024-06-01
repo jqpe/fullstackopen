@@ -30,6 +30,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 
 # Copy application code
 COPY --link . .
+
 RUN pnpm build
 
 # Final stage for app image
