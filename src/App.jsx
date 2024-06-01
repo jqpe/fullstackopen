@@ -66,7 +66,7 @@ const App = () => {
     if (window.confirm(`Delete ${person.name}?`)) {
       personService
         .remove(person.id)
-        .then(res => setPersons(persons.filter(({ id }) => id !== res.data.id)))
+        .then(() => setPersons(persons.filter(({ id }) => id !== person.id)))
         .catch(() => {
           showNotification(
             `Information of ${person.name} has already been removed from the server`,
