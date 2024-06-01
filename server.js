@@ -1,5 +1,7 @@
+/* eslint-disable */
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 
 const app = express()
 
@@ -27,6 +29,7 @@ let persons = [
 ]
 
 app.use(express.json())
+app.use(cors())
 
 // if token is falsy morgan prints out - for all requests (i.e. GET requests as well)
 // we could write some spaghetti to work around this, but nah
@@ -84,7 +87,7 @@ app.post('/api/persons', (req, res) => {
 
   persons = persons.concat(person)
 
-  res.status(201).end()
+  res.status(201).json(person).end()
 })
 
 app.delete('/api/persons/:id', (req, res) => {

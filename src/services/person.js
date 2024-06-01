@@ -1,5 +1,5 @@
 import axios from 'axios'
-const API_ENDPOINT = 'http://localhost:3001/persons'
+const API_ENDPOINT = 'http://localhost:3001/api/persons'
 
 export const getAll = () => {
   return axios.get(API_ENDPOINT)
