@@ -1,7 +1,7 @@
 /* eslint-disable */
-const express = require('express')
-const morgan = require('morgan')
-const cors = require('cors')
+import express, { json } from 'express'
+import morgan, { token } from 'morgan'
+import cors from 'cors'
 
 const app = express()
 
@@ -28,12 +28,12 @@ let persons = [
   }
 ]
 
-app.use(express.json())
+app.use(json())
 app.use(cors())
 
 // if token is falsy morgan prints out - for all requests (i.e. GET requests as well)
 // we could write some spaghetti to work around this, but nah
-morgan.token('body', req => {
+token('body', req => {
   return req.method === 'POST' && JSON.stringify(req.body)
 })
 
