@@ -44,6 +44,8 @@ const tiny = ':method :url :status :res[content-length] - :response-time ms'
 
 app.use(morgan(`${tiny} :body`))
 
+app.use(express.static('dist'))
+
 app.get('/api/persons', (_, res) => res.json(persons))
 app.get('/api/persons/:id', (req, res) => {
   const { id } = req.params

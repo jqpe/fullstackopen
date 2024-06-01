@@ -30,6 +30,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 
 # Copy application code
 COPY --link . .
+RUN pnpm build
 
 # Final stage for app image
 FROM base
@@ -37,5 +38,4 @@ FROM base
 # Copy built application
 COPY --from=build /app /app
 
-# Start the server by default, this can be overwritten at runtime
-CMD [ "npm", "run", "start" ]
+CMD [ "node", "server.js" ]
