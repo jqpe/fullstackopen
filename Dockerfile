@@ -12,23 +12,24 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 
-
 # Throw-away build stage to reduce size of final image
 FROM base as build
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
 # Install packages needed to build node modules
 RUN apt-get update -qq && \
-    apt-get install -y python-is-python3 pkg-config build-essential 
+    apt-get install -y python-is-python3 pkg-config build-essential
+RUN corepack enable
 
 # Install node modules
 COPY --link package.json .
-RUN npm install --production=false
+COPY --link pnpm-lock.yaml .
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
 # Copy application code
 COPY --link . .
-
-# Remove development dependencies
-RUN npm prune --production
 
 # Final stage for app image
 FROM base
