@@ -1,8 +1,12 @@
 /* eslint-disable */
+import cors from 'cors'
 import express, { json } from 'express'
 import morgan, { token } from 'morgan'
-import cors from 'cors'
 
+import { connect } from './db.js'
+import { Person } from './models/people.js'
+
+await connect()
 const app = express()
 
 let persons = [
@@ -46,7 +50,7 @@ app.use(morgan(`${tiny} :body`))
 
 app.use(express.static('dist'))
 
-app.get('/api/persons', (_, res) => res.json(persons))
+app.get('/api/persons', async (_, res) => res.json(await Person.find({})))
 app.get('/api/persons/:id', (req, res) => {
   const { id } = req.params
 
