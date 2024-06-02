@@ -1,4 +1,5 @@
-const { set, connect, model, Schema, connection } = require('mongoose')
+import mongoose from 'mongoose'
+import { Person } from './models/people.js'
 
 if (!process.argv[2]) {
   console.error('Missing password')
@@ -9,16 +10,9 @@ const [password, name, number] = process.argv.slice(2)
 
 const url = `mongodb+srv://root:${password}@fs.fpa18iz.mongodb.net/?retryWrites=true&w=majority`
 
-set('strictQuery', false)
+mongoose.set('strictQuery', false)
 
-connect(url)
-
-const personSchema = new Schema({
-  number: String,
-  name: String
-})
-
-const Person = model('Person', personSchema)
+mongoose.connect(url)
 
 function newPerson() {
   const person = new Person({
@@ -28,7 +22,7 @@ function newPerson() {
 
   person.save().then(document => {
     console.log(`added ${document.name} number ${document.number} to phonebook`)
-    connection.close()
+    mongoose.connection.close()
   })
 }
 
@@ -39,7 +33,7 @@ function printPersons() {
       console.log(person.name, person.number)
     }
 
-    connection.close()
+    mongoose.connection.close()
   })
 }
 
