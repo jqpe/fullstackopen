@@ -66,7 +66,7 @@ app.get('/api/persons/:id', (req, res) => {
   res.end()
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', async (req, res) => {
   const person = { ...req.body }
 
   if (!person) {
@@ -89,11 +89,20 @@ app.post('/api/persons', (req, res) => {
     return
   }
 
-  person.id = Math.random() * 100
+  let _person = person
 
-  persons = persons.concat(person)
+  {
+    const person = new Person({
+      name: _person.name,
+      number: _person.number
+    })
 
-  res.status(201).json(person).end()
+    _person = await person.save()
+  }
+
+  persons = persons.concat(_person)
+
+  res.status(201).json(_person).end()
 })
 
 app.delete('/api/persons/:id', (req, res) => {

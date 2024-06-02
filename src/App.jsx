@@ -46,7 +46,7 @@ const App = () => {
 
           setPersons(copy)
         })
-        .then(showNotification(`Updated ${person.name}`))
+        .then(() => showNotification(`Updated ${person.name}`))
         .catch(() => {
           showNotification(
             `Can not update. Information of ${person.name} has been removed from the server`,
@@ -58,7 +58,11 @@ const App = () => {
 
     personService
       .create(person)
-      .then(res => setPersons(persons.concat(res.data)))
+      .then(res => {
+        console.log(res.data);
+
+        setPersons(persons.concat(res.data))
+      })
       .then(() => showNotification(`Added ${person.name}`))
   }
 
