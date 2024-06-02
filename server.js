@@ -5,6 +5,7 @@ import morgan, { token } from 'morgan'
 
 import { connect } from './db.js'
 import { Person } from './models/people.js'
+import mongoose from 'mongoose'
 
 await connect()
 const app = express()
@@ -76,7 +77,7 @@ app.put('/api/persons/:id', (req, res, next) => {
     return next(new TypeError('name must be in body'))
   }
 
-  Person.findByIdAndUpdate(id, req.body)
+  Person.findByIdAndUpdate(id, req.body, { runValidators: true })
     .then(document => res.json(document))
     .catch(next)
 })
@@ -109,6 +110,10 @@ app.get('/info', async (_, res, next) => {
 
 const errorHandler = (error, _, res, next) => {
   console.error(error.message)
+
+  if (error.name === 'ValidationError') {
+    return res.status(400).send({ error: error.message })
+  }
 
   if (error.name === 'CastError') {
     return res.status(400).send({ error: 'malformatted id' })

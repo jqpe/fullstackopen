@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import personService from './services/person'
 
 import './App.css'
+import { AxiosError } from 'axios'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -47,7 +48,11 @@ const App = () => {
           setPersons(copy)
         })
         .then(() => showNotification(`Updated ${person.name}`))
-        .catch(() => {
+        .catch(error => {
+          if (error instanceof AxiosError && error.response.data?.errors) {
+            return showNotification(error.response.data.errors, 'error')
+          }
+
           showNotification(
             `Can not update. Information of ${person.name} has been removed from the server`,
             'error'
@@ -58,12 +63,9 @@ const App = () => {
 
     personService
       .create(person)
-      .then(res => {
-        console.log(res.data);
-
-        setPersons(persons.concat(res.data))
-      })
+      .then(res => setPersons(persons.concat(res.data)))
       .then(() => showNotification(`Added ${person.name}`))
+      .catch(error => showNotification(error.response.data.error, 'error'))
   }
 
   const handleDelete = person => {
