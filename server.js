@@ -66,27 +66,23 @@ app.get('/api/persons/:id', (req, res) => {
   res.end()
 })
 
-app.post('/api/persons', async (req, res) => {
+app.post('/api/persons', async (req, res, next) => {
   const person = { ...req.body }
 
   if (!person) {
-    res.status(400).json({ error: 'body must not be empty' }).end()
-    return
+    return next(new TypeError('body must not be empty'))
   }
 
   if (!('number' in person)) {
-    res.status(400).json({ error: 'number must be in body' }).end()
-    return
+    return next(new TypeError('number must be in body'))
   }
 
   if (!('name' in person)) {
-    res.status(400).json({ error: 'name must be in body' }).end()
-    return
+    return next(new TypeError('name must be in body'))
   }
 
   if (persons.includes(person.name)) {
-    res.status(400).json({ error: 'name is already in phonebook' }).end()
-    return
+    return next(new TypeError('name is already in phonebook'))
   }
 
   let _person = person
@@ -105,11 +101,11 @@ app.post('/api/persons', async (req, res) => {
   res.status(201).json(_person).end()
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
   Person.findByIdAndDelete(id)
     .then(() => res.status(204).end())
-    .catch(() => res.status(400).end())
+    .catch(next)
 })
 
 app.get('/info', (_, res) => {
@@ -128,6 +124,23 @@ app.get('/info', (_, res) => {
 
   res.send(html)
 })
+
+const errorHandler = (error, _, res, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return res.status(400).send({ error: 'malformatted id' })
+  }
+
+  if (error instanceof TypeError) {
+    return res.status(400).send({ error: error.message })
+  }
+
+  next(error)
+}
+
+// this has to be the last loaded middleware, also all the routes should be registered before this!
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
