@@ -9,29 +9,6 @@ import { Person } from './models/people.js'
 await connect()
 const app = express()
 
-let persons = [
-  {
-    id: 1,
-    name: 'Arto Hellas',
-    number: '040-123456'
-  },
-  {
-    id: 2,
-    name: 'Ada Lovelace',
-    number: '39-44-5323523'
-  },
-  {
-    id: 3,
-    name: 'Dan Abramov',
-    number: '12-43-234345'
-  },
-  {
-    id: 4,
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122'
-  }
-]
-
 app.use(json())
 app.use(cors())
 
@@ -47,68 +24,73 @@ token('body', req => {
 const tiny = ':method :url :status :res[content-length] - :response-time ms'
 
 app.use(morgan(`${tiny} :body`))
-
 app.use(express.static('dist'))
 
 app.get('/api/persons', async (_, res) => res.json(await Person.find({})))
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   const { id } = req.params
 
-  try {
-    const person = persons.find(person => person.id == id)
-
-    if (person) {
+  Person.findById(id)
+    .then(person => {
       return res.json(person)
-    }
-  } catch {}
-
-  res.status(404)
-  res.end()
+    })
+    .catch(next)
 })
 
-app.post('/api/persons', async (req, res, next) => {
-  const person = { ...req.body }
-
-  if (!person) {
+app.post('/api/persons', (req, res, next) => {
+  if (!req.body) {
     return next(new TypeError('body must not be empty'))
   }
 
-  if (!('number' in person)) {
+  if (!('number' in req.body)) {
     return next(new TypeError('number must be in body'))
   }
 
-  if (!('name' in person)) {
+  if (!('name' in req.body)) {
     return next(new TypeError('name must be in body'))
   }
 
-  if (persons.includes(person.name)) {
-    return next(new TypeError('name is already in phonebook'))
+  const person = new Person({
+    name: req.body.name,
+    number: req.body.number
+  })
+
+  person
+    .save()
+    .then(() => res.status(201).json(person))
+    .catch(next)
+})
+
+app.put('/api/persons/:id', (req, res, next) => {
+  const { id } = req.params
+
+  if (!req.body) {
+    return next(new TypeError('body must not be empty'))
   }
 
-  let _person = person
-
-  {
-    const person = new Person({
-      name: _person.name,
-      number: _person.number
-    })
-
-    _person = await person.save()
+  if (!('number' in req.body)) {
+    return next(new TypeError('number must be in body'))
   }
 
-  persons = persons.concat(_person)
+  if (!('name' in req.body)) {
+    return next(new TypeError('name must be in body'))
+  }
 
-  res.status(201).json(_person).end()
+  Person.findByIdAndUpdate(id, req.body)
+    .then(document => res.json(document))
+    .catch(next)
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
-  const id = req.params.id
+  const { id } = req.params
   Person.findByIdAndDelete(id)
     .then(() => res.status(204).end())
     .catch(next)
 })
 
-app.get('/info', (_, res) => {
+app.get('/info', async (_, res, next) => {
+  const persons = await Person.find({}).catch(next)
+
   // minimal valid html according to w3
   const html = `<!doctype html>
   <html lang="en">
