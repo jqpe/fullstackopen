@@ -55,3 +55,11 @@ Exercises 18—20:
 
 - https://github.com/jqpe/fullstackopen/tree/part-2/countries
 </details>
+
+<details>
+<summary>part 3</summary>
+Exercises 1—22:
+
+- https://github.com/jqpe/fullstackopen/tree/part-3
+
+</details>
