@@ -1,27 +1,22 @@
+import { useState } from 'react'
 import { useEffect } from 'react'
-import { createRef } from 'react'
 
 export function Notification(props) {
   const { message, variant = 'success' } = props
+  const initial = `notification ${variant}`
 
-  const ref = createRef()
-  const className = `notification ${variant}`
+  const [className, setClassname] = useState(initial)
 
   useEffect(() => {
     if (!message) return
+    setClassname(initial)
 
-    setTimeout(() => {
-      ref.current?.classList.remove(className.replace(' ', '.'))
-    }, 5000)
+    setTimeout(() => setClassname(undefined), 3000)
   }, [props])
 
-  if (!message) {
+  if (!message || !className) {
     return null
   }
 
-  return (
-    <aside ref={ref} className={className}>
-      {message}
-    </aside>
-  )
+  return <aside className={className}>{message}</aside>
 }
