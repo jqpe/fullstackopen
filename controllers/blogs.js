@@ -7,14 +7,6 @@ const config = require('../utils/config.js')
 
 const blogs = express.Router()
 
-const getTokenFrom = req => {
-  const authorization = req.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
-
 blogs.get('/', async (_, res) => {
   const blogs = await Blog.find({}).populate('user', {
     name: 1,
@@ -26,9 +18,10 @@ blogs.get('/', async (_, res) => {
 })
 
 blogs.post('/', async (req, res) => {
-  const decodedToken = jwt.verify(getTokenFrom(req), config.HASH)
+  const decodedToken = jwt.verify(req.token, config.HASH)
+
   if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
+    return res.status(401).json({ error: 'token invalid' })
   }
   const user = await User.findById(decodedToken.id)
 

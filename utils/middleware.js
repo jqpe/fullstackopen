@@ -19,10 +19,19 @@ const errorMiddleware = (error, _, res, next) => {
   }
 
   if (error.name === 'JsonWebTokenError') {
-    return response.status(401).json({ error: 'token invalid' })
+    return res.status(401).json({ error: 'token invalid' })
   }
 
   next(error)
 }
 
-module.exports = { errorMiddleware }
+const tokenExtractor = (req, _, next) => {
+  const authorization = req.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    req.token = authorization.replace('Bearer ', '')
+  }
+
+  next()
+}
+
+module.exports = { errorMiddleware, tokenExtractor }
