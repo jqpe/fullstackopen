@@ -33,9 +33,22 @@ blogs.post('/', async (req, res) => {
 })
 
 blogs.delete('/:id', async (req, res) => {
-  await Blog.findByIdAndDelete(req.params.id)
+  const decodedToken = jwt.verify(req.token, config.HASH)
 
-  res.status(204).end()
+  if (!decodedToken.id) {
+    return res.status(401).json({ error: 'token invalid' })
+  }
+
+  const blog = await Blog.findById(req.params.id, { user: 1 })
+
+  console.log({ blog })
+
+  if (blog.user.toString() !== decodedToken.id) {
+    res.status(401).json({ error: 'token invalid' })
+  }
+
+  await blog.deleteOne()
+  return res.status(204).end()
 })
 
 blogs.put('/:id', async (req, res) => {

@@ -21,7 +21,8 @@ const initialBlogs = [
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
     likes: 7,
-    _id: ID
+    _id: ID,
+    user: USER_ID
   },
   {
     title: 'Go To Statement Considered Harmful',
@@ -141,11 +142,14 @@ test('responds with status 400 if url is missing', async () => {
     .expect(400)
 })
 
-test('can delete a blog', async () => {
+test.only('can delete a blog', async () => {
   // just to be sound
   assert.strictEqual(initialBlogs.length, 2)
 
-  await api.delete(`/api/blogs/${ID}`).expect(204)
+  await api
+    .delete(`/api/blogs/${ID}`)
+    .set(...authHeaders)
+    .expect(204)
 
   const blogs = await Blog.find({})
 
@@ -158,7 +162,9 @@ test('can update a blog', async () => {
 
   const body = { ...response.body }
   delete body.id
+  delete body.user
   delete newBlog._id
+  delete newBlog.user
 
   assert.deepStrictEqual(body, newBlog)
 
