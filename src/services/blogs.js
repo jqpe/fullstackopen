@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = new URL('/api/blogs', import.meta.env.VITE_API_URL)
+const baseUrl = new URL('/api/blogs/', import.meta.env.VITE_API_URL)
 
 export const getAll = () => {
   const request = axios.get(baseUrl)
@@ -14,6 +14,16 @@ export const addBlog = ({ title, author, url, token }) => {
   )
 }
 
-const blogsService = { addBlog, getAll }
+export const update = ({ title, author, url, likes, id, user }) => {
+  return axios.put(new URL(id, baseUrl), {
+    title,
+    author,
+    url,
+    likes,
+    user: user.id
+  })
+}
 
-export default blogsService
+const blogService = { addBlog, getAll, update }
+
+export default blogService

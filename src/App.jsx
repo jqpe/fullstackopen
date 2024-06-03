@@ -61,6 +61,26 @@ const App = () => {
       })
   }
 
+  const onLikeButtonClick = blog => {
+    blogService
+      .update({ ...blog, likes: blog.likes + 1 })
+      .then(res => {
+        const copy = [...blogs]
+        const index = copy.findIndex(v => v.id === res.data.id)
+        copy[index] = res.data
+
+        setBlogs(copy)
+      })
+      .catch(error => {
+        if (error instanceof AxiosError) {
+          setNotification({
+            message: error.response.data.error,
+            variant: 'error'
+          })
+        }
+      })
+  }
+
   const onAddBlog = async ({ url, title, author }) => {
     let isSuccess = false
     await addBlog({ url, title, author, token: user.token })
@@ -139,7 +159,11 @@ const App = () => {
       </Toggle>
 
       {blogs.map(blog => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          handleLikeButtonClick={onLikeButtonClick}
+        />
       ))}
     </div>
   )
