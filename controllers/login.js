@@ -14,7 +14,7 @@ login.post('/', async (req, res) => {
   const passwordCorrect = user && compare(user.passwordHash, password)
 
   if (!passwordCorrect) {
-    return response.status(401).json({
+    return res.status(401).json({
       error: 'invalid username or password'
     })
   }

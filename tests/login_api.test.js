@@ -33,6 +33,13 @@ describe.only('login api', () => {
 
     assert(res.body.token)
   })
+
+  test('responds with status 401 if password is wrong', async () => {
+    await api
+      .post('/api/login')
+      .send({ username: 'superman', password: 'this is not it 💩' })
+      .expect(401)
+  })
 })
 
 after(async () => {
