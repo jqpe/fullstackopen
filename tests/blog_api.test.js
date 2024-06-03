@@ -131,6 +131,16 @@ test('responds with status 400 if title is missing', async () => {
     .expect(400)
 })
 
+test('responds with 401 unauthorized when creating a blog without authorization', async () => {
+  const newBlog = initialBlogs[1]
+
+  await api.post('/api/blogs').send(newBlog).expect(401)
+})
+
+test('responds with 401 unauthorized when deleting a blog one does not own', async () => {
+  await api.delete(`/api/blogs/${ID}`).expect(401)
+})
+
 test('responds with status 400 if url is missing', async () => {
   const newBlog = { ...initialBlogs[1] }
   delete newBlog.url
