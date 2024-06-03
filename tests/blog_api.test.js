@@ -69,6 +69,7 @@ test('submitting works', async () => {
   const body = { ...response.body }
   // another way would be to send the id with the request
   delete body.id
+  delete body.user
 
   assert.deepEqual(body, newBlog)
 
@@ -89,6 +90,7 @@ test('likes default to 0 if not present', async () => {
   const body = { ...response.body }
   // another way would be to send the id with the request
   delete body.id
+  delete body.user
 
   assert.deepEqual(body, { ...newBlog, likes: 0 })
 })
