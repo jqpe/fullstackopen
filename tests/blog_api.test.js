@@ -2,14 +2,18 @@ const { test, after, before, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const assert = require('node:assert')
+const jwt = require('jsonwebtoken')
 
 const app = require('../app.js')
 const config = require('../utils/config.js')
 const { Blog } = require('../models/blog.js')
+const { User } = require('../models/user.js')
+const { passwordHash } = require('../utils/crypto.js')
 
 const api = supertest(app)
 
 const ID = mongoose.Types.ObjectId.createFromBase64('test--test--test')
+const USER_ID = mongoose.Types.ObjectId.createFromBase64('test--user--test')
 
 const initialBlogs = [
   {
@@ -27,11 +31,29 @@ const initialBlogs = [
   }
 ]
 
+const authHeaders = [
+  'Authorization',
+  `Bearer ${jwt.sign(
+    {
+      username: 'testing-bearer',
+      id: USER_ID
+    },
+    config.HASH
+  )}`
+]
+
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
 
   await new Blog(initialBlogs[0]).save()
   await new Blog(initialBlogs[1]).save()
+
+  await new User({
+    username: 'testing-bearer',
+    passwordHash: passwordHash('test'),
+    _id: USER_ID
+  }).save()
 })
 
 before(async () => {
@@ -62,6 +84,7 @@ test('submitting works', async () => {
 
   const response = await api
     .post('/api/blogs')
+    .set(...authHeaders)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -83,6 +106,7 @@ test('likes default to 0 if not present', async () => {
 
   const response = await api
     .post('/api/blogs')
+    .set(...authHeaders)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -99,14 +123,22 @@ test('responds with status 400 if title is missing', async () => {
   const newBlog = { ...initialBlogs[1] }
   delete newBlog.title
 
-  await api.post('/api/blogs').send(newBlog).expect(400)
+  await api
+    .post('/api/blogs')
+    .set(...authHeaders)
+    .send(newBlog)
+    .expect(400)
 })
 
 test('responds with status 400 if url is missing', async () => {
   const newBlog = { ...initialBlogs[1] }
   delete newBlog.url
 
-  await api.post('/api/blogs').send(newBlog).expect(400)
+  await api
+    .post('/api/blogs')
+    .set(...authHeaders)
+    .send(newBlog)
+    .expect(400)
 })
 
 test('can delete a blog', async () => {

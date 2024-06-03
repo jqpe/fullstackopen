@@ -24,7 +24,7 @@ beforeEach(async () => {
   }).save()
 })
 
-describe.only('login api', () => {
+describe('login api', () => {
   test('successful login yields a token', async () => {
     const res = await api
       .post('/api/login')
