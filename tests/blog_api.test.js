@@ -100,6 +100,13 @@ test('responds with status 400 if title is missing', async () => {
   await api.post('/api/blogs').send(newBlog).expect(400)
 })
 
+test('responds with status 400 if url is missing', async () => {
+  const newBlog = { ...initialBlogs[1] }
+  delete newBlog.url
+
+  await api.post('/api/blogs').send(newBlog).expect(400)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
