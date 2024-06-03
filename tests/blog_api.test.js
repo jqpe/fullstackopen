@@ -9,12 +9,15 @@ const { Blog } = require('../models/blog.js')
 
 const api = supertest(app)
 
+const ID = mongoose.Types.ObjectId.createFromBase64('test--test--test')
+
 const initialBlogs = [
   {
     title: 'React patterns',
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
-    likes: 7
+    likes: 7,
+    _id: ID
   },
   {
     title: 'Go To Statement Considered Harmful',
@@ -46,6 +49,12 @@ test('there are correct amount of blogs', async () => {
   const response = await api.get('/api/blogs')
 
   assert.strictEqual(response.body.length, 2)
+})
+
+test('_id is available under id key', async () => {
+  const response = await api.get('/api/blogs')
+
+  assert.strictEqual(response.body[0].id, ID.toString())
 })
 
 after(async () => {
