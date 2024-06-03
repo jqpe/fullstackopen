@@ -1,11 +1,9 @@
-/* eslint-disable */
 import cors from 'cors'
 import express, { json } from 'express'
 import morgan, { token } from 'morgan'
 
 import { connect } from './db.js'
 import { Person } from './models/people.js'
-import mongoose from 'mongoose'
 
 await connect()
 const app = express()
