@@ -10,6 +10,7 @@ import { Notification } from './components/Notification'
 import { AxiosError } from 'axios'
 
 import './App.css'
+import { Toggle } from './components/Toggle'
 
 const getPersistedUser = () => {
   try {
@@ -22,6 +23,7 @@ const getPersistedUser = () => {
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(getPersistedUser())
+  const [isToggleVisible, setIsToggleVisible] = useState(false)
   const [notification, setNotification] = useState({
     message: null,
     variant: 'success'
@@ -59,8 +61,9 @@ const App = () => {
       })
   }
 
-  const onAddBlog = ({ url, title, author }) => {
-    addBlog({ url, title, author, token: user.token })
+  const onAddBlog = async ({ url, title, author }) => {
+    let isSuccess = false
+    await addBlog({ url, title, author, token: user.token })
       .then(res => {
         const blog = res.data
         setBlogs(blogs.concat(blog))
@@ -68,20 +71,26 @@ const App = () => {
           message: `A new blog ${blog.title} by ${blog.author} added`,
           variant: 'success'
         })
+
+        isSuccess = true
       })
       .catch(error => {
         if (error instanceof AxiosError) {
-          setNotification({
+          return setNotification({
             message: error.response.data.error,
             variant: 'error'
           })
         }
+
+        console.log(error)
 
         setNotification({
           message: 'unknown error',
           variant: 'error'
         })
       })
+
+    return isSuccess
   }
 
   if (!user) {
@@ -115,8 +124,20 @@ const App = () => {
           logout
         </button>
       </div>
-      <h2>create new</h2>
-      <AddBlogForm user={user} handleSubmit={onAddBlog} />
+      <Toggle
+        open={isToggleVisible}
+        onOpenChange={setIsToggleVisible}
+        openPrompt="new note"
+        closePrompt="cancel"
+      >
+        <h2>create new</h2>
+        <AddBlogForm
+          user={user}
+          handleSubmit={async blog => {
+            onAddBlog(blog).then(success => setIsToggleVisible(!success))
+          }}
+        />
+      </Toggle>
 
       {blogs.map(blog => (
         <Blog key={blog.id} blog={blog} />

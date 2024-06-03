@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import { createRef } from 'react'
 
-export function Notification({ message, variant = 'sucess' }) {
+export function Notification(props) {
+  const { message, variant = 'success' } = props
+
   const ref = createRef()
   const className = `notification ${variant}`
 
@@ -9,9 +11,9 @@ export function Notification({ message, variant = 'sucess' }) {
     if (!message) return
 
     setTimeout(() => {
-      ref.current?.classList.remove(variant)
+      ref.current?.classList.remove(className.replace(' ', '.'))
     }, 5000)
-  }, [message])
+  }, [props])
 
   if (!message) {
     return null
