@@ -5,7 +5,14 @@ const personSchema = new mongoose.Schema({
     type: String,
     required: true,
     minLength: 8,
-    match: /\d{2,3}-\d+/
+    validate: {
+      validator(v) {
+        return /\d{2,3}-\d+/.test(v)
+      },
+      message(props) {
+        return `${props.value} did not satify regex /\\d{2,3}-\\d+/`
+      }
+    }
   },
   name: {
     type: String,
