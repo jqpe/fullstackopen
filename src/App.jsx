@@ -5,9 +5,17 @@ import { LoginForm } from './components/LoginForm'
 import blogService from './services/blogs'
 import { login } from './services/login'
 
+const getPersistedUser = () => {
+  try {
+    return JSON.parse(window.localStorage.getItem('user'))
+  } catch {
+    return null
+  }
+}
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(getPersistedUser())
 
   useEffect(() => {
     blogService.getAll().then(blogs => setBlogs(blogs))
@@ -15,7 +23,11 @@ const App = () => {
 
   const onSubmit = ({ username, password }) => {
     login({ username, password })
-      .then(res => setUser(res.data))
+      .then(res => {
+        window.localStorage.setItem('user', JSON.stringify(res.data))
+
+        setUser(res.data)
+      })
       .catch()
   }
 
@@ -26,7 +38,17 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <p>{user.name} logged in</p>
+      <div>
+        {user.name} logged in{' '}
+        <button
+          onClick={() => {
+            window.localStorage.removeItem('user')
+            setUser(null)
+          }}
+        >
+          logout
+        </button>
+      </div>
       {blogs.map(blog => (
         <Blog key={blog.id} blog={blog} />
       ))}
