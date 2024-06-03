@@ -39,4 +39,4 @@ FROM base
 # Copy built application
 COPY --from=build /app /app
 
-CMD [ "node", "server.js" ]
+CMD [ "npm", "start" ]
