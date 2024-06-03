@@ -1,10 +1,10 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite client",
     "dev:server": "node --env-file=.env --watch server.js",
     "start": "node --env-file=.env server.js",
-    "build": "vite build",
+    "build": "vite build client --emptyOutDir --outDir ../dist",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

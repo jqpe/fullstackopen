@@ -3,13 +3,16 @@
 **deployed here**: https://jqpe-fullstackopen.fly.dev/
 
 **server**
+
 - `server.js`, `models/` and `db.js`
 
 **CLI**
+
 - `mongo.js`
 
-**client**
-- everything else
+**client (frontend)**
+
+- `client/`
 
 ---
 
