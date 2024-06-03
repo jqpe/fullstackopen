@@ -5,7 +5,7 @@ const config = require('../utils/config.js')
 
 const users = express.Router()
 
-users.post('/api/users', async (req, res) => {
+users.post('/', async (req, res) => {
   const { username, name, password } = req.body
 
   if (!password || password.length < 3) {
@@ -25,7 +25,7 @@ users.post('/api/users', async (req, res) => {
   res.status(201).json(savedUser)
 })
 
-users.get('/api/users', async (_, res) => {
+users.get('/', async (_, res) => {
   const users = await User.find({})
   res.json(users)
 })
