@@ -76,6 +76,23 @@ test('submitting works', async () => {
   assert.strictEqual(blogs.length, 3)
 })
 
+test('likes default to 0 if not present', async () => {
+  const newBlog = { ...initialBlogs[1], title: 'another one!' }
+  delete newBlog.likes
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const body = { ...response.body }
+  // another way would be to send the id with the request
+  delete body.id
+
+  assert.deepEqual(body, { ...newBlog, likes: 0 })
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
