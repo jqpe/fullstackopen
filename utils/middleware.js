@@ -1,4 +1,6 @@
 const logger = require('./logger')
+const jwt = require('jsonwebtoken')
+const config = require('./config.js')
 
 const errorMiddleware = (error, _, res, next) => {
   logger.error(error)
@@ -34,4 +36,12 @@ const tokenExtractor = (req, _, next) => {
   next()
 }
 
-module.exports = { errorMiddleware, tokenExtractor }
+const userExtractor = (req, _, next) => {
+  const decodedToken = req.token && jwt.verify(req.token, config.HASH)
+
+  req.user = decodedToken?.id ? decodedToken.id : null
+
+  next()
+}
+
+module.exports = { errorMiddleware, tokenExtractor, userExtractor }

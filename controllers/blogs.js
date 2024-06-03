@@ -18,12 +18,11 @@ blogs.get('/', async (_, res) => {
 })
 
 blogs.post('/', async (req, res) => {
-  const decodedToken = jwt.verify(req.token, config.HASH)
-
-  if (!decodedToken.id) {
+  if (!req.user) {
     return res.status(401).json({ error: 'token invalid' })
   }
-  const user = await User.findById(decodedToken.id)
+  
+  const user = await User.findById(req.user)
 
   const blog = await new Blog({ ...req.body, user: user.id }).save()
   user.blogs = user.blogs.concat(blog._id)
@@ -33,17 +32,13 @@ blogs.post('/', async (req, res) => {
 })
 
 blogs.delete('/:id', async (req, res) => {
-  const decodedToken = jwt.verify(req.token, config.HASH)
-
-  if (!decodedToken.id) {
+  if (!req.user) {
     return res.status(401).json({ error: 'token invalid' })
   }
 
   const blog = await Blog.findById(req.params.id, { user: 1 })
 
-  console.log({ blog })
-
-  if (blog.user.toString() !== decodedToken.id) {
+  if (blog.user.toString() !== req.user) {
     res.status(401).json({ error: 'token invalid' })
   }
 
