@@ -107,6 +107,17 @@ test('responds with status 400 if url is missing', async () => {
   await api.post('/api/blogs').send(newBlog).expect(400)
 })
 
+test('can delete a blog', async () => {
+  // just to be sound
+  assert.strictEqual(initialBlogs.length, 2)
+
+  await api.delete(`/api/blogs/${ID}`).expect(204)
+
+  const blogs = await Blog.find({})
+
+  assert.strictEqual(blogs.length, 1)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })

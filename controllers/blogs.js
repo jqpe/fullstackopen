@@ -16,4 +16,10 @@ blogs.post('/api/blogs', async (req, res) => {
   res.status(201).json(blog)
 })
 
+blogs.delete('/api/blogs/:id', async (req, res) => {
+  await Blog.findByIdAndDelete(req.params.id)
+
+  res.status(204).end()
+})
+
 module.exports = blogs
