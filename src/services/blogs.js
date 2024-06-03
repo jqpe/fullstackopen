@@ -24,6 +24,12 @@ export const update = ({ title, author, url, likes, id, user }) => {
   })
 }
 
-const blogService = { addBlog, getAll, update }
+export const remove = ({ id }, token) => {
+  return axios.delete(new URL(id, baseUrl), {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+}
+
+const blogService = { addBlog, getAll, update, remove }
 
 export default blogService

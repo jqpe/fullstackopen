@@ -1,7 +1,9 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, handleLikeButtonClick }) => {
+const Blog = ({ blog, handleLikeButtonClick, handleBlogDelete, username }) => {
   const [open, setOpen] = useState(false)
+
+  console.log(username, blog)
 
   return (
     <details open={open} onClick={e => e.preventDefault()}>
@@ -15,6 +17,10 @@ const Blog = ({ blog, handleLikeButtonClick }) => {
         <button onClick={() => handleLikeButtonClick(blog)}>like</button>
       </div>
       <p>{blog.author}</p>
+
+      {username === blog.user.username && (
+        <button onClick={() => handleBlogDelete(blog)}>remove</button>
+      )}
     </details>
   )
 }

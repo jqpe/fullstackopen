@@ -81,6 +81,29 @@ const App = () => {
       })
   }
 
+  const onBlogDelete = blog => {
+    if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
+      blogService
+        .remove(blog, user.token)
+        .then(() => {
+          setNotification({
+            message: `removed ${blog.title}`,
+            variant: 'success'
+          })
+
+          setBlogs(blogs.filter(v => v.id !== blog.id))
+        })
+        .catch(error => {
+          if (error instanceof AxiosError) {
+            setNotification({
+              message: error.response.data.error,
+              variant: 'error'
+            })
+          }
+        })
+    }
+  }
+
   const onAddBlog = async ({ url, title, author }) => {
     let isSuccess = false
     await addBlog({ url, title, author, token: user.token })
@@ -117,10 +140,12 @@ const App = () => {
     return (
       <>
         <h2>login to application</h2>
-        <Notification
-          message={notification.message}
-          variant={notification.variant}
-        />
+        {notification.message && (
+          <Notification
+            message={notification.message}
+            variant={notification.variant}
+          />
+        )}
         <LoginForm handleSubmit={onSubmit} />
       </>
     )
@@ -162,9 +187,11 @@ const App = () => {
         .toSorted((a, b) => b.likes - a.likes)
         .map(blog => (
           <Blog
+            username={user.username}
             key={blog.id}
             blog={blog}
             handleLikeButtonClick={onLikeButtonClick}
+            handleBlogDelete={onBlogDelete}
           />
         ))}
     </div>
