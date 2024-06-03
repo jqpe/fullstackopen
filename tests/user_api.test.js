@@ -33,8 +33,11 @@ test('can create a new user', async () => {
 })
 
 test('can get a list of users', async () => {
-  const user = { name: 'Milla Marttila', username: 'milli', password: 'test' }
-  await api.post('/api/users/').send(user).expect(201)
+  await new User({
+    name: 'Milla Marttila',
+    username: 'milli',
+    passwordHash: 'test'
+  }).save()
 
   const res = await api
     .get('/api/users')
@@ -47,7 +50,7 @@ test('can get a list of users', async () => {
   assert(res.body[0].id)
 })
 
-test.only('responds with status 400 if username is less than 3 chars', async () => {
+test('responds with status 400 if username is less than 3 chars', async () => {
   assert('💩'.length === 2)
   const user = { username: '💩', password: 'test' }
   const res = await api.post('/api/users/').send(user).expect(400)
@@ -55,13 +58,26 @@ test.only('responds with status 400 if username is less than 3 chars', async () 
   assert(/validation failed/.test(res.body.error))
 })
 
-test.only('responds with status 400 if password is less than 3 chars', async () => {
+test('responds with status 400 if password is less than 3 chars', async () => {
   assert('💩'.length === 2)
   const user = { username: 'milla', password: '💩' }
   const res = await api.post('/api/users/').send(user).expect(400)
   assert.deepStrictEqual(res.body, {
     error: 'password should be at least 3 characters long'
   })
+})
+
+test.only('username must be unique', async () => {
+  await new User({
+    name: 'Milla Marttila',
+    username: 'milli',
+    passwordHash: 'test'
+  }).save()
+
+  const user = { name: 'Kyösti Pöysti', username: 'milli', password: 'test' }
+  const res = await api.post('/api/users/').send(user).expect(400)
+
+  assert(/expected `username` to be unique/.test(res.body.error))
 })
 
 after(async () => {
