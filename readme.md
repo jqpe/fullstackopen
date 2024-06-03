@@ -2,7 +2,16 @@
 
 **deployed here**: https://jqpe-fullstackopen.fly.dev/
 
-Contains the server (server.js) and client code (everything else pretty much).
+**server**
+- `server.js`, `models/` and `db.js`
+
+**CLI**
+- `mongo.js`
+
+**client**
+- everything else
+
+---
 
 - to start the server in watch mode: `pnpm dev:server`
 - to start the client in watch mode: `pnpm dev`
