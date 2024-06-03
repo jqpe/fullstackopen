@@ -118,7 +118,7 @@ test('can delete a blog', async () => {
   assert.strictEqual(blogs.length, 1)
 })
 
-test.only('can update a blog', async () => {
+test('can update a blog', async () => {
   const newBlog = { ...initialBlogs[0], likes: 200_000 }
   const response = await api.put(`/api/blogs/${ID}`).send(newBlog).expect(200)
 
