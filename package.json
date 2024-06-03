@@ -3,12 +3,15 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development node --env-file .env --watch server.js",
     "start": "cross-env NODE_ENV=production node --env-file .env server.js",
-    "test": "cross-env NODE_ENV=test node --test"
+    "test": "cross-env NODE_ENV=test node --env-file .env --test"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "express": "^4.19.2",
     "mongoose": "^8.4.1"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
   }
 }
