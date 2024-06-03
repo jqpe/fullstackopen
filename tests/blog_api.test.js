@@ -118,17 +118,15 @@ test('can delete a blog', async () => {
   assert.strictEqual(blogs.length, 1)
 })
 
-test('can update a blog', async () => {
-  const newBlog = { ...initialBlogs[1], likes: 200_000 }
-  const response = await api
-    .update(`/api/blogs/${ID}`)
-    .send(newBlog)
-    .expect(200)
+test.only('can update a blog', async () => {
+  const newBlog = { ...initialBlogs[0], likes: 200_000 }
+  const response = await api.put(`/api/blogs/${ID}`).send(newBlog).expect(200)
 
   const body = { ...response.body }
   delete body.id
+  delete newBlog._id
 
-  assert.strictEqual(body, newBlog)
+  assert.deepStrictEqual(body, newBlog)
 
   const blog = await Blog.findById(ID)
 

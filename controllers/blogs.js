@@ -22,4 +22,14 @@ blogs.delete('/api/blogs/:id', async (req, res) => {
   res.status(204).end()
 })
 
+blogs.put('/api/blogs/:id', async (req, res) => {
+  const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+    runValidators: true,
+    // ensures we return the updated blog, by default mongoose returns the altered one
+    new: true
+  })
+
+  res.json(blog)
+})
+
 module.exports = blogs
