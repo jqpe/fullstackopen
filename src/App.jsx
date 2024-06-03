@@ -130,7 +130,6 @@ const App = () => {
         openPrompt="new note"
         closePrompt="cancel"
       >
-        <h2>create new</h2>
         <AddBlogForm
           user={user}
           handleSubmit={async blog => {
