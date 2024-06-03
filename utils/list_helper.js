@@ -36,9 +36,29 @@ const mostBlogs = blogs => {
   return bestAuthor ? { author: bestAuthor, blogs: mostBlogs } : null
 }
 
+const mostLikes = blogs => {
+  const authors = {}
+  for (const blog of blogs ?? []) {
+    authors[blog.author] = (authors[blog.author] || 0) + blog.likes
+  }
+
+  let bestAuthor = null
+  let mostLikes = 0
+
+  for (const [author, likes] of Object.entries(authors)) {
+    if (likes > mostLikes) {
+      mostLikes = likes
+      bestAuthor = author
+    }
+  }
+
+  return bestAuthor ? { author: bestAuthor, likes: mostLikes } : null
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }

@@ -159,3 +159,39 @@ describe('most blogs', () => {
     assert.strictEqual(listHelper.mostBlogs(blogs), null)
   })
 })
+
+describe('most likes', () => {
+  test('returns author with most likes', () => {
+    const blogs = [
+      { author: 'milla', likes: 20 },
+      { author: 'juunas', likes: 10 },
+      { author: 'juunas', likes: 10 },
+      { author: 'juunas', likes: 10 },
+      { author: 'milla', likes: 20 }
+    ]
+
+    assert.deepEqual(listHelper.mostLikes(blogs), {
+      author: 'milla',
+      likes: 40
+    })
+  })
+
+  test('returns first author when tied', () => {
+    const blogs = [
+      { author: 'lumi', likes: 1 },
+      { author: 'pekka', likes: 1 }
+    ]
+
+    assert.deepEqual(listHelper.mostLikes(blogs), {
+      author: 'lumi',
+      likes: 1
+    })
+  })
+
+  test('may return null if there are no authors with likes', () => {
+    assert.strictEqual(listHelper.mostLikes(null), null)
+    assert.strictEqual(listHelper.mostLikes([]), null)
+    assert.strictEqual(listHelper.mostLikes([{ author: 'juunas' }]), null)
+    assert.strictEqual(listHelper.mostLikes([{ likes: null }]), null)
+  })
+})
