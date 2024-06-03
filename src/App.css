@@ -1,0 +1,16 @@
+:where(.notification) {
+  padding: 0.5rem 0.8rem;
+  border-radius: 5px;
+  margin-block: 1rem;
+  display: none;
+}
+
+.notification.success {
+  border: 1px solid green;
+  display: block;
+}
+
+.notification.error {
+  border: 1px solid red;
+  display: block;
+}
