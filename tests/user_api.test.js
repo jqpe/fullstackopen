@@ -67,7 +67,7 @@ test('responds with status 400 if password is less than 3 chars', async () => {
   })
 })
 
-test.only('username must be unique', async () => {
+test('username must be unique', async () => {
   await new User({
     name: 'Milla Marttila',
     username: 'milli',

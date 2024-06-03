@@ -1,6 +1,6 @@
 const express = require('express')
 const { User } = require('../models/user.js')
-const { hash } = require('../utils/crypto.js')
+const { passwordHash } = require('../utils/crypto.js')
 
 const users = express.Router()
 
@@ -11,12 +11,10 @@ users.post('/', async (req, res) => {
     throw new TypeError('password should be at least 3 characters long')
   }
 
-  const passwordHash = hash(password)
-
   const user = new User({
     username,
     name,
-    passwordHash: passwordHash.toString('hex')
+    passwordHash: passwordHash(password)
   })
 
   const savedUser = await user.save()
