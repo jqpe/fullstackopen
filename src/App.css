@@ -14,3 +14,20 @@
   border: 1px solid red;
   display: block;
 }
+
+details > summary,
+details > summary:first-of-type {
+  all: unset;
+  display: block;
+}
+
+details {
+  border: 1px solid gray;
+  padding: 0.7rem 0.5rem;
+  margin-block: 0.5rem;
+}
+
+details > * {
+  line-height: 120%;
+  margin: 0;
+}
