@@ -158,13 +158,15 @@ const App = () => {
         />
       </Toggle>
 
-      {blogs.map(blog => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleLikeButtonClick={onLikeButtonClick}
-        />
-      ))}
+      {blogs
+        .toSorted((a, b) => b.likes - a.likes)
+        .map(blog => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleLikeButtonClick={onLikeButtonClick}
+          />
+        ))}
     </div>
   )
 }
