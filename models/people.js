@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
 const personSchema = new mongoose.Schema({
   number: {
@@ -29,4 +29,4 @@ personSchema.set('toJSON', {
   }
 })
 
-export const Person = mongoose.model('Person', personSchema)
+module.exports.Person = mongoose.model('Person', personSchema)

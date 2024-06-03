@@ -15,8 +15,7 @@ module.exports = {
     }
   ],
   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module'
+    ecmaVersion: 'latest'
   },
   plugins: ['@stylistic/js'],
   extends: ['eslint:recommended'],

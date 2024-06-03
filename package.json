@@ -1,8 +1,8 @@
 {
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
-    "dev": "vite client",
-    "dev:server": "node --env-file=.env --watch server.js",
+    "dev:client": "vite client",
+    "dev": "node --env-file=.env --watch server.js",
     "start": "node --env-file=.env server.js",
     "build": "vite build client --emptyOutDir --outDir ../dist",
     "lint": "eslint . --ext js,jsx --max-warnings 0",

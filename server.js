@@ -1,14 +1,16 @@
-import cors from 'cors'
-import express, { json } from 'express'
-import morgan, { token } from 'morgan'
+const cors = require('cors')
+const express = require('express')
 
-import { connect } from './db.js'
-import { Person } from './models/people.js'
+const morgan = require('morgan')
+const { token } = morgan
 
-await connect()
+const { connect } = require('./db.js')
+const { Person } = require('./models/people.js')
+
+connect()
 const app = express()
 
-app.use(json())
+app.use(express.json())
 app.use(cors())
 
 // if token is falsy morgan prints out - for all requests (i.e. GET requests as well)

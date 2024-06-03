@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import { Person } from './models/people.js'
+const mongoose = require('mongoose')
+const { Person } = require('./models/people.js')
 
 if (!process.argv[2]) {
   console.error('Missing password')

@@ -2,7 +2,7 @@
 // a bad practise in almost all cases. E.g. what happens if we have multiple models
 // and they all create their own connection?
 
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
 /**
  * Connect to MongoDB with mongoose
@@ -10,7 +10,7 @@ import mongoose from 'mongoose'
  * @param {string} [uri] optional MongoDB connection string, default: `process.env.MONGODB_URL`
  * @throws {Error} if database connection failed
  */
-export async function connect(uri) {
+async function connect(uri) {
   try {
     await mongoose.connect(uri ?? process.env.MONGODB_URI)
     console.log('connected to database')
@@ -18,3 +18,5 @@ export async function connect(uri) {
     throw new Error(`database connection failed with error ${e.message}`)
   }
 }
+
+module.exports.connect = connect
