@@ -93,6 +93,13 @@ test('likes default to 0 if not present', async () => {
   assert.deepEqual(body, { ...newBlog, likes: 0 })
 })
 
+test('responds with status 400 if title is missing', async () => {
+  const newBlog = { ...initialBlogs[1] }
+  delete newBlog.title
+
+  await api.post('/api/blogs').send(newBlog).expect(400)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
