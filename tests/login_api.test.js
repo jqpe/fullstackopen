@@ -40,6 +40,13 @@ describe.only('login api', () => {
       .send({ username: 'superman', password: 'this is not it 💩' })
       .expect(401)
   })
+
+  test('responds with status 401 if username does not exist', async () => {
+    await api
+      .post('/api/login')
+      .send({ username: 'this does not exist', password: 'test' })
+      .expect(401)
+  })
 })
 
 after(async () => {
