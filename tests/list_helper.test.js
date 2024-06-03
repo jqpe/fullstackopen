@@ -88,7 +88,7 @@ describe('most blogs', () => {
       blogs: 3
     })
   })
-  
+
   test('returns first author when tied', () => {
     const blogs = [
       { author: 'milla' },
@@ -107,5 +107,55 @@ describe('most blogs', () => {
 
   test('may return null if there are no blogs', () => {
     assert.strictEqual(listHelper.mostBlogs([]), null)
+  })
+
+  test('returns correct author when all blogs are from the same author', () => {
+    const blogs = [
+      { author: 'milla' },
+      { author: 'milla' },
+      { author: 'milla' }
+    ]
+
+    assert.deepEqual(listHelper.mostBlogs(blogs), {
+      author: 'milla',
+      blogs: 3
+    })
+  })
+
+  test('returns correct author when authors have the same number of blogs', () => {
+    const blogs = [
+      { author: 'milla' },
+      { author: 'juunas' },
+      { author: 'milla' },
+      { author: 'juunas' }
+    ]
+
+    assert.deepEqual(listHelper.mostBlogs(blogs), {
+      author: 'milla',
+      blogs: 2
+    })
+  })
+
+  test('returns correct author when there is only one blog', () => {
+    const blogs = [{ author: 'milla' }]
+
+    assert.deepEqual(listHelper.mostBlogs(blogs), {
+      author: 'milla',
+      blogs: 1
+    })
+  })
+
+  test('returns null when blogs array is undefined', () => {
+    assert.strictEqual(listHelper.mostBlogs(undefined), null)
+  })
+
+  test('returns null when blogs array is null', () => {
+    assert.strictEqual(listHelper.mostBlogs(null), null)
+  })
+
+  test('returns null when blogs array contains blogs without authors', () => {
+    const blogs = [{ title: 'Blog 1' }, { title: 'Blog 2' }]
+
+    assert.strictEqual(listHelper.mostBlogs(blogs), null)
   })
 })

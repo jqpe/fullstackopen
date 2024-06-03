@@ -13,8 +13,14 @@ const favoriteBlog = blogs => {
 const mostBlogs = blogs => {
   const authors = {}
 
+  if (!Array.isArray(blogs)) {
+    return null
+  }
+
   for (const blog of blogs) {
-    authors[blog.author] = (authors[blog.author] || 0) + 1
+    if ('author' in blog) {
+      authors[blog.author] = (authors[blog.author] || 0) + 1
+    }
   }
 
   let bestAuthor = null
