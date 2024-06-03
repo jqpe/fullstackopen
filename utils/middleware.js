@@ -7,6 +7,10 @@ const errorMiddleware = (error, _, res, next) => {
     return res.status(400).send({ error: error.message })
   }
 
+  if (error instanceof TypeError) {
+    return res.status(400).send({ error: error.message })
+  }
+
   next(error)
 }
 

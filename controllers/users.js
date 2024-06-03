@@ -8,6 +8,10 @@ const users = express.Router()
 users.post('/api/users', async (req, res) => {
   const { username, name, password } = req.body
 
+  if (!password || password.length < 3) {
+    throw new TypeError('password should be at least 3 characters long')
+  }
+
   const passwordHash = crypto.scryptSync(password, config.HASH, 64)
 
   const user = new User({

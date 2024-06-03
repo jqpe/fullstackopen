@@ -17,7 +17,7 @@ beforeEach(async () => {
   await User.deleteMany({})
 })
 
-test.only('can create a new user', async () => {
+test('can create a new user', async () => {
   const user = { name: 'Milla Marttila', username: 'milli', password: 'test' }
   const res = await api.post('/api/users/').send(user).expect(201)
 
@@ -32,7 +32,7 @@ test.only('can create a new user', async () => {
   assert.strictEqual(users.length, 1)
 })
 
-test.only('can get a list of users', async () => {
+test('can get a list of users', async () => {
   const user = { name: 'Milla Marttila', username: 'milli', password: 'test' }
   await api.post('/api/users/').send(user).expect(201)
 
@@ -45,6 +45,23 @@ test.only('can get a list of users', async () => {
   assert(res.body[0].name)
   assert(res.body[0].username)
   assert(res.body[0].id)
+})
+
+test.only('responds with status 400 if username is less than 3 chars', async () => {
+  assert('💩'.length === 2)
+  const user = { username: '💩', password: 'test' }
+  const res = await api.post('/api/users/').send(user).expect(400)
+
+  assert(/validation failed/.test(res.body.error))
+})
+
+test.only('responds with status 400 if password is less than 3 chars', async () => {
+  assert('💩'.length === 2)
+  const user = { username: 'milla', password: '💩' }
+  const res = await api.post('/api/users/').send(user).expect(400)
+  assert.deepStrictEqual(res.body, {
+    error: 'password should be at least 3 characters long'
+  })
 })
 
 after(async () => {
