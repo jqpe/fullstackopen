@@ -10,8 +10,7 @@ blogs.get('/api/blogs', async (_, res) => {
 })
 
 blogs.post('/api/blogs', async (req, res) => {
-  const defaults = { likes: 0 }
-  const blog = await new Blog({ ...defaults, ...req.body }).save()
+  const blog = await new Blog(req.body).save()
 
   res.status(201).json(blog)
 })
