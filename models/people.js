@@ -3,7 +3,9 @@ import mongoose from 'mongoose'
 const personSchema = new mongoose.Schema({
   number: {
     type: String,
-    required: true
+    required: true,
+    minLength: 8,
+    match: /\d{2,3}-\d+/
   },
   name: {
     type: String,

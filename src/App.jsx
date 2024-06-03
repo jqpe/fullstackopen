@@ -49,8 +49,8 @@ const App = () => {
         })
         .then(() => showNotification(`Updated ${person.name}`))
         .catch(error => {
-          if (error instanceof AxiosError && error.response.data?.errors) {
-            return showNotification(error.response.data.errors, 'error')
+          if (error instanceof AxiosError && error.response.data?.error) {
+            return showNotification(error.response.data.error, 'error')
           }
 
           showNotification(
