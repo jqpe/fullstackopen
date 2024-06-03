@@ -32,6 +32,21 @@ test.only('can create a new user', async () => {
   assert.strictEqual(users.length, 1)
 })
 
+test.only('can get a list of users', async () => {
+  const user = { name: 'Milla Marttila', username: 'milli', password: 'test' }
+  await api.post('/api/users/').send(user).expect(201)
+
+  const res = await api
+    .get('/api/users')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  assert.strictEqual(res.body.length, 1)
+  assert(res.body[0].name)
+  assert(res.body[0].username)
+  assert(res.body[0].id)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })

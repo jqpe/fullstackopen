@@ -21,4 +21,9 @@ users.post('/api/users', async (req, res) => {
   res.status(201).json(savedUser)
 })
 
+users.get('/api/users', async (_, res) => {
+  const users = await User.find({})
+  res.json(users)
+})
+
 module.exports = users
