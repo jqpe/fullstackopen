@@ -5,4 +5,20 @@ const loginWith = async (page, username, password) => {
   page.getByRole('button', { name: 'login' }).click()
 }
 
-module.exports = { loginWith }
+/**
+ * @param {*} page
+ * @param {string} title
+ * @param {string} author
+ * @param {string} [url]
+ */
+const createBlog = async (page, title, author, url) => {
+  await page.getByRole('button', { name: 'new note' }).click()
+
+  await page.getByTestId('title').fill(title)
+  await page.getByTestId('author').fill(author)
+  await page.getByTestId('url').fill(url ?? 'https://example.com')
+
+  await page.getByRole('button', { name: 'create' }).click()
+}
+
+module.exports = { loginWith, createBlog }
