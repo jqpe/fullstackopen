@@ -50,3 +50,18 @@ test('can be opened with button click', async () => {
   expect(likes).toBeVisible()
   expect(anchor).toBeVisible()
 })
+
+test('like callback works', async () => {
+  const onClick = vi.fn()
+  const { container } = render(
+    <Blog {...mock} handleLikeButtonClick={onClick} />
+  )
+  const likeButton = container.querySelector('.likes-container > button')
+
+  const user = userEvent.setup()
+
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(onClick).toHaveBeenCalledTimes(2)
+})
