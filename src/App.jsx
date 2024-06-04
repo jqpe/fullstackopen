@@ -3,8 +3,11 @@ import Notification from './components/Notification'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { anecdoteService } from './requests'
+import { useContext } from 'react'
+import NotificationContext from './NotificationContext'
 
 const App = () => {
+  const [, dispatchNotification] = useContext(NotificationContext)
   const queryClient = useQueryClient()
   const anecdoteMutation = useMutation({
     mutationFn: anecdoteService.update,
@@ -14,6 +17,12 @@ const App = () => {
       anecdotes[updatedAnecdote] = data
 
       queryClient.setQueryData(['anecdotes'], anecdotes)
+
+      dispatchNotification({
+        type: 'SET',
+        payload: `Anecdonte '${data.content}' voted`
+      })
+      setTimeout(() => dispatchNotification({ type: 'CLEAR' }), 5000)
     }
   })
   const anecdotesQuery = useQuery({
