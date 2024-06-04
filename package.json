@@ -1,0 +1,11 @@
+{
+  "type": "commonjs",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.1",
+    "@types/node": "^20.14.1",
+    "dotenv": "^16.4.5"
+  }
+}
