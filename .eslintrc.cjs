@@ -1,19 +1,19 @@
 module.exports = {
   root: true,
-  env: { browser: true, es2020: true },
+  env: { browser: true, es2020: true, 'vitest-globals/env': true },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:react-hooks/recommended',
-    'plugin:unicorn/recommended'
+    'plugin:unicorn/recommended',
+    'plugin:vitest-globals/recommended'
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   settings: { react: { version: '18.2' } },
   plugins: ['react-refresh'],
   rules: {
-    "no-undef": 0,
     // in React world null is actually very useful
     'unicorn/no-null': 0,
     // We could configure this with overloads but ehh
