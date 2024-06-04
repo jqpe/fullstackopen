@@ -13,6 +13,7 @@ module.exports = {
   settings: { react: { version: '18.2' } },
   plugins: ['react-refresh'],
   rules: {
+    "no-undef": 0,
     // in React world null is actually very useful
     'unicorn/no-null': 0,
     // We could configure this with overloads but ehh
