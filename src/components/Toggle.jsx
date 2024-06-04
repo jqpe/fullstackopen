@@ -1,5 +1,3 @@
-/* eslint react/prop-types: 2 */
-
 import PropTypes from 'prop-types'
 
 export function Toggle({
