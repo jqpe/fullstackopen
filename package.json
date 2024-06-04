@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development node --env-file .env --watch server.js",
     "start": "cross-env NODE_ENV=production node --env-file .env server.js",
-    "test": "cross-env NODE_ENV=test node --env-file .env --test --test-concurrency=1"
+    "test": "cross-env NODE_ENV=test node --env-file .env --test --test-concurrency=1",
+    "start:test": "cross-env NODE_ENV=test node --env-file .env server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
