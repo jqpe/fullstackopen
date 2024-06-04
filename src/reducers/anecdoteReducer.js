@@ -20,14 +20,22 @@ const asObject = anecdote => {
 const initialState = anecdotesAtStart.map(asObject)
 
 export const voteAnecdote = id => ({ type: 'VOTE', payload: { id } })
+export const createAnecdote = content => ({
+  type: 'CREATE',
+  payload: { content }
+})
 
 const reducer = (state = initialState, action) => {
   if (action.type === 'VOTE') {
     const newState = Array.from(state)
-    const note = initialState.findIndex(({ id }) => id === action.payload.id)
+    const note = state.findIndex(({ id }) => id === action.payload.id)
     newState[note] = { ...newState[note], votes: newState[note].votes + 1 }
 
     return newState
+  }
+  if (action.type === 'CREATE') {
+    const newAnecdote = asObject(action.payload.content)
+    return [...state, newAnecdote]
   }
 
   return state
