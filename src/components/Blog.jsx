@@ -6,7 +6,7 @@ const Blog = ({ blog, handleLikeButtonClick, handleBlogDelete, username }) => {
   console.log(username, blog)
 
   return (
-    <details open={open} onClick={e => e.preventDefault()}>
+    <details open={open} onClick={event => event.preventDefault()}>
       <summary>
         {blog.title} {blog.author}{' '}
         <button onClick={() => setOpen(!open)}>{open ? 'hide' : 'view'}</button>

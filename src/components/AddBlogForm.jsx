@@ -11,8 +11,8 @@ export function AddBlogForm({ user, handleSubmit }) {
     <div>
       <h2>create new</h2>
       <form
-        onSubmit={e => {
-          e.preventDefault()
+        onSubmit={event => {
+          event.preventDefault()
           handleSubmit({ title, author, url })
         }}
       >

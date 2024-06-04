@@ -14,9 +14,16 @@ module.exports = {
   plugins: ['react-refresh'],
   rules: {
     // in React world null is actually very useful
-    "unicorn/no-null": 0,
+    'unicorn/no-null': 0,
     // We could configure this with overloads but ehh
-    "unicorn/filename-case": 0,
+    'unicorn/filename-case': 0,
+    'unicorn/prevent-abbreviations': [
+      2,
+      {
+        allowList: { props: true }
+      }
+    ],
+    'unicorn/prefer-query-selector': 0,
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true }

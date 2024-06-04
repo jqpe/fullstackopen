@@ -40,9 +40,9 @@ const App = () => {
 
   const onSubmit = ({ username, password }) => {
     login({ username, password })
-      .then(res => {
-        window.localStorage.setItem('user', JSON.stringify(res.data))
-        setUser(res.data)
+      .then(response => {
+        window.localStorage.setItem('user', JSON.stringify(response.data))
+        setUser(response.data)
 
         setNotification({
           message: `welcome back ${user.username}!`,
@@ -64,10 +64,10 @@ const App = () => {
   const onLikeButtonClick = blog => {
     blogService
       .update({ ...blog, likes: blog.likes + 1 })
-      .then(res => {
+      .then(response => {
         const copy = [...blogs]
-        const index = copy.findIndex(v => v.id === res.data.id)
-        copy[index] = res.data
+        const index = copy.findIndex(v => v.id === response.data.id)
+        copy[index] = response.data
 
         setBlogs(copy)
       })
@@ -107,9 +107,9 @@ const App = () => {
   const onAddBlog = async ({ url, title, author }) => {
     let isSuccess = false
     await addBlog({ url, title, author, token: user.token })
-      .then(res => {
-        const blog = res.data
-        setBlogs(blogs.concat(blog))
+      .then(response => {
+        const blog = response.data
+        setBlogs([...blogs, blog])
         setNotification({
           message: `A new blog ${blog.title} by ${blog.author} added`,
           variant: 'success'
