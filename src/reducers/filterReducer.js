@@ -9,8 +9,8 @@ const filterSlice = createSlice({
     clearFilter() {
       return initialState
     },
-    setFilter(_, payload) {
-      return payload.filter
+    setFilter(_, action) {
+      return action.payload
     }
   }
 })
