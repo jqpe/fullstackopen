@@ -5,7 +5,11 @@ import { voteAnecdote } from '../reducers/anecdoteReducer'
 export default function AnecdoteList() {
   const dispatch = useDispatch()
 
-  const anecdotes = useSelector(state => state.anecdotes)
+  const anecdotes = useSelector(({ filter, anecdotes }) => {
+    if (!filter) return anecdotes
+
+    return anecdotes.filter(a => new RegExp(filter, 'ig').test(a.content))
+  })
   const vote = id => dispatch(voteAnecdote(id))
 
   return anecdotes
