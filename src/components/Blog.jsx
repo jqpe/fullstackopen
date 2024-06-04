@@ -6,11 +6,11 @@ const Blog = ({ blog, handleLikeButtonClick, handleBlogDelete, username }) => {
   return (
     <details open={open} onClick={event => event.preventDefault()}>
       <summary>
-        {blog.title} {blog.author}{' '}
+        <span>{blog.title}</span> <span>{blog.author}</span>{' '}
         <button onClick={() => setOpen(!open)}>{open ? 'hide' : 'view'}</button>
       </summary>
       <a href={blog.url}>{blog.url}</a>
-      <div>
+      <div className='likes-container'>
         likes {blog.likes}{' '}
         <button onClick={() => handleLikeButtonClick(blog)}>like</button>
       </div>
