@@ -72,3 +72,22 @@ Exercises 1—23:
 
 </details>
 
+<details>
+<summary>part 5</summary>
+
+> The commits might look a bit funny as I had to juggle between the branches to add and remove stuff (especially in the e2e section).
+> The branches satisfy exercise requirements even though they might have extraneous code not related to those exercises.
+
+
+Exercises 1—16:
+
+- https://github.com/jqpe/fullstackopen/tree/part-5/frontend
+
+Exercises 17—23:
+- https://github.com/jqpe/fullstackopen/tree/part-5/e2e
+
+Misc: 
+- https://github.com/jqpe/fullstackopen/tree/part-5/backend
+
+
+</details>
