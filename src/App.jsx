@@ -51,7 +51,7 @@ const App = () => {
       })
       .catch(error => {
         if (error instanceof AxiosError) {
-          setNotification({
+          return setNotification({
             message: error.response.data.error,
             variant: 'error'
           })
@@ -119,18 +119,11 @@ const App = () => {
       })
       .catch(error => {
         if (error instanceof AxiosError) {
-          return setNotification({
+          setNotification({
             message: error.response.data.error,
             variant: 'error'
           })
         }
-
-        console.log(error)
-
-        setNotification({
-          message: 'unknown error',
-          variant: 'error'
-        })
       })
 
     return isSuccess
