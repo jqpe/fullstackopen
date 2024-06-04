@@ -1,3 +1,5 @@
+/* eslint react/prop-types: 2 */
+
 import { useEffect, useState } from 'react'
 
 import { AddBlogForm } from './components/AddBlogForm'

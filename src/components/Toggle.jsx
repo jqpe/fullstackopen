@@ -1,3 +1,7 @@
+/* eslint react/prop-types: 2 */
+
+import PropTypes from 'prop-types'
+
 export function Toggle({
   open,
   onOpenChange,
@@ -13,4 +17,12 @@ export function Toggle({
       </button>
     </>
   )
+}
+
+Toggle.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onOpenChange: PropTypes.func.isRequired,
+  children: PropTypes.elementType,
+  closePrompt: PropTypes.string.isRequired,
+  openPrompt: PropTypes.string.isRequired
 }

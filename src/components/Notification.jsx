@@ -12,7 +12,7 @@ export function Notification(props) {
     setClassname(initial)
 
     setTimeout(() => setClassname(undefined), 3000)
-  }, [props])
+  }, [initial, message])
 
   if (!message || !className) {
     return null
