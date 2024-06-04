@@ -91,3 +91,19 @@ Misc:
 
 
 </details>
+
+<details>
+<summary>part 6</summary>
+Exercises 1—2:
+
+- https://github.com/jqpe/fullstackopen/tree/part-6/unicafe
+
+Exercises 3—19:
+
+- https://github.com/jqpe/fullstackopen/tree/part-6/anecdotes
+
+Exercises 20-24:
+
+- https://github.com/jqpe/fullstackopen/tree/part-6/anecdotes-query
+
+</details>
