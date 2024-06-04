@@ -21,4 +21,29 @@ const createBlog = async (page, title, author, url) => {
   await page.getByRole('button', { name: 'create' }).click()
 }
 
-module.exports = { loginWith, createBlog }
+const createBlogWithNewUser = async (request, user) => {
+  const userEndpoint = new URL('/api/users', process.env.BACKEND_URL).href
+  await request.post(userEndpoint, {
+    data: user
+  })
+  const loginEndpoint = new URL('/api/login', process.env.BACKEND_URL).href
+  const res = await request.post(loginEndpoint, {
+    data: user
+  })
+
+  const { token } = await res.json()
+
+  const blogsEndpoint = new URL('/api/blogs', process.env.BACKEND_URL).href
+  await request.post(blogsEndpoint, {
+    data: {
+      title: 'kävin kalassa',
+      url: 'https://example.com',
+      author: 'miika'
+    },
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+}
+
+module.exports = { loginWith, createBlog, createBlogWithNewUser }

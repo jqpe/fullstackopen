@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const { loginWith, createBlog } = require('./helpers')
+const { loginWith, createBlog, createBlogWithNewUser } = require('./helpers')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -80,6 +80,26 @@ describe('Blog app', () => {
 
       await expect(
         page.getByText('cool title', { exact: true })
+      ).not.toBeVisible()
+    })
+
+    test('does not see remove button on posts created by other users', async ({
+      page,
+      request
+    }) => {
+      await createBlogWithNewUser(request, {
+        username: 'miika',
+        name: 'Miika Mittaaja',
+        password: 'opsec'
+      })
+
+      // There is no live connection so posts created by other users will not be
+      // immediately visible
+      await page.reload()
+
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(
+        page.getByRole('button', { name: 'remove' })
       ).not.toBeVisible()
     })
   })
