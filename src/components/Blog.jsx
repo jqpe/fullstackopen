@@ -3,8 +3,6 @@ import { useState } from 'react'
 const Blog = ({ blog, handleLikeButtonClick, handleBlogDelete, username }) => {
   const [open, setOpen] = useState(false)
 
-  console.log(username, blog)
-
   return (
     <details open={open} onClick={event => event.preventDefault()}>
       <summary>
