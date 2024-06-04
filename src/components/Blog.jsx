@@ -9,8 +9,10 @@ const Blog = ({ blog, handleLikeButtonClick, handleBlogDelete, username }) => {
         <span>{blog.title}</span> <span>{blog.author}</span>{' '}
         <button onClick={() => setOpen(!open)}>{open ? 'hide' : 'view'}</button>
       </summary>
-      <a href={blog.url}>{blog.url}</a>
-      <div className='likes-container'>
+      <a href={blog.url} className="url">
+        {blog.url}
+      </a>
+      <div className="likes-container">
         likes {blog.likes}{' '}
         <button onClick={() => handleLikeButtonClick(blog)}>like</button>
       </div>
