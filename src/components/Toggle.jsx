@@ -20,7 +20,7 @@ export function Toggle({
 Toggle.propTypes = {
   open: PropTypes.bool.isRequired,
   onOpenChange: PropTypes.func.isRequired,
-  children: PropTypes.elementType,
+  children: PropTypes.element.isRequired,
   closePrompt: PropTypes.string.isRequired,
   openPrompt: PropTypes.string.isRequired
 }
