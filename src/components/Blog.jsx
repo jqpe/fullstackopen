@@ -4,7 +4,11 @@ const Blog = ({ blog, handleLikeButtonClick, handleBlogDelete, username }) => {
   const [open, setOpen] = useState(false)
 
   return (
-    <details open={open} onClick={event => event.preventDefault()}>
+    <details
+      open={open}
+      onClick={event => event.preventDefault()}
+      data-testid="blog"
+    >
       <summary>
         <span>{blog.title}</span> <span>{blog.author}</span>{' '}
         <button onClick={() => setOpen(!open)}>{open ? 'hide' : 'view'}</button>
