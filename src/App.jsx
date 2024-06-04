@@ -2,12 +2,12 @@ import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 
 import { useQuery } from '@tanstack/react-query'
-import { getAll } from './requests'
+import { anecdoteService } from './requests'
 
 const App = () => {
   const anecdotesQuery = useQuery({
     queryKey: ['anecdotes'],
-    queryFn: getAll
+    queryFn: anecdoteService.getAll
   })
 
   const anecdotes = anecdotesQuery.data
