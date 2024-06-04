@@ -19,6 +19,7 @@ export function AddBlogForm({ user, handleSubmit }) {
         <div>
           title
           <input
+            data-testid="title"
             type="text"
             value={title}
             name="Title"
@@ -28,6 +29,7 @@ export function AddBlogForm({ user, handleSubmit }) {
         <div>
           author
           <input
+            data-testid="author"
             type="text"
             value={author}
             name="Author"
@@ -37,6 +39,7 @@ export function AddBlogForm({ user, handleSubmit }) {
         <div>
           url
           <input
+            data-testid="url"
             type="url"
             value={url}
             name="Url"

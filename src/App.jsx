@@ -56,8 +56,6 @@ const App = () => {
             variant: 'error'
           })
         }
-
-        setNotification({ message: 'unknown error', variant: 'error' })
       })
   }
 
