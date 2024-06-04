@@ -102,5 +102,41 @@ describe('Blog app', () => {
         page.getByRole('button', { name: 'remove' })
       ).not.toBeVisible()
     })
+
+    test('blogs are sorted by likes (descending)', async ({
+      page,
+      request
+    }) => {
+      // posts have zero likes by default
+      await createBlogWithNewUser(request, {
+        username: 'miika',
+        name: 'Miika Mittaaja',
+        password: 'opsec'
+      })
+      await createBlogWithNewUser(
+        request,
+        {
+          username: 'miisa',
+          name: 'Miisa mallikas',
+          password: 'kansalainen'
+        },
+        {
+          title: 'kävin myös kalassa',
+          author: 'miisa',
+          url: 'https://example.com'
+        }
+      )
+
+      await page.reload()
+
+      // like the last blog
+      await page.getByRole('button', { name: 'view' }).last().click()
+      await page.getByRole('button', { name: 'like' }).last().click()
+      await expect(page.getByText('likes 1')).toBeVisible()
+
+      const firstBlog = page.getByTestId('blog').first()
+
+      await expect(firstBlog).toHaveText(/kävin myös kalassa/)
+    })
   })
 })

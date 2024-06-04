@@ -21,7 +21,7 @@ const createBlog = async (page, title, author, url) => {
   await page.getByRole('button', { name: 'create' }).click()
 }
 
-const createBlogWithNewUser = async (request, user) => {
+const createBlogWithNewUser = async (request, user, blog) => {
   const userEndpoint = new URL('/api/users', process.env.BACKEND_URL).href
   await request.post(userEndpoint, {
     data: user
@@ -35,7 +35,7 @@ const createBlogWithNewUser = async (request, user) => {
 
   const blogsEndpoint = new URL('/api/blogs', process.env.BACKEND_URL).href
   await request.post(blogsEndpoint, {
-    data: {
+    data: blog ?? {
       title: 'kävin kalassa',
       url: 'https://example.com',
       author: 'miika'
