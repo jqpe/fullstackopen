@@ -9,10 +9,12 @@ part-1
     unicafe
 ```
 
-You can use `git branch` to list the branches or GUI like GitHub's.
+You can use `git branch` to list the branches or GUI like GitHub's. The branches are also listed below for convenience.
+When you want to develop backend and frontend at the same time use [git worktrees](https://git-scm.com/docs/git-worktree).
 
 > [!NOTE]
-> Some branches might specify `pnpm` as package manager, this is not strictly necessary and npm ought to work as well.
+> pnpm was used to install dependencies, but using it not strictly necessary and npm ought to work as well.
+> If you wish to use pnpm run `corepack enable` followed by `corepack install pnpm@9.2.0` for best results. [Corepack](https://nodejs.org/api/corepack.html) is installed by default on recent Node.js versions.
 
 ## Branches
 
