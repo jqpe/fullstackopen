@@ -13,15 +13,18 @@ import './App.css'
 import ListView from './views/ListView'
 import UserListView from './views/UserListView'
 import UserView from './views/UserView'
+import BlogView from './views/BlogView'
 
 const App = () => {
   const user = useSelector((state) => state.user)
 
   const dispatch = useDispatch()
 
-  const match = useMatch('/user/:id')
+  const userMatch = useMatch('/user/:id')
+  const userId = userMatch ? userMatch.params.id : null
 
-  const userId = match ? match.params.id : null
+  const blogMatch = useMatch('/blogs/:id')
+  const blogId = blogMatch ? blogMatch.params.id : null
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -57,6 +60,7 @@ const App = () => {
         <Route path="/" element={<ListView />} />
         <Route path="/users" element={<UserListView />} />
         <Route path="/user/:id" element={<UserView id={userId} />} />
+        <Route path="/blogs/:id" element={<BlogView id={blogId} />} />
       </Routes>
     </div>
   )
