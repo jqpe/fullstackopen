@@ -11,6 +11,19 @@ export default function BlogView({ id }) {
     dispatch(updateBlog({ ...blog, likes: blog.likes + 1 }))
   }
 
+  const onComment = (event) => {
+    event.preventDefault()
+
+    const withComment = {
+      ...blog,
+      comments: [...blog.comments, event.target.comment.value],
+    }
+
+    dispatch(updateBlog(withComment))
+
+    event.target.comment.value = ''
+  }
+
   const onDelete = (blog) => {
     if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
       dispatch(deleteBlog(blog, user.token))
@@ -36,6 +49,16 @@ export default function BlogView({ id }) {
       {user.username === blog.user.username && (
         <button onClick={() => onDelete(blog)}>remove</button>
       )}
+      <h3>comments</h3>
+      <form onSubmit={onComment}>
+        <input type="text" name="comment" id="comment" />
+        <button type="submit">add comment</button>
+      </form>
+      <ul>
+        {blog.comments.map((comment, index) => (
+          <li key={`${comment} ${index}`}>{comment}</li>
+        ))}
+      </ul>
     </>
   )
 }

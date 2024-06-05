@@ -14,12 +14,9 @@ export const addBlog = ({ title, author, url, token }) => {
   )
 }
 
-export const update = ({ title, author, url, likes, id, user }) => {
-  return axios.put(new URL(id, baseUrl), {
-    title,
-    author,
-    url,
-    likes,
+export const update = ({ user, ...blog }) => {
+  return axios.put(new URL(blog.id, baseUrl), {
+    ...blog,
     user: user.id,
   })
 }
