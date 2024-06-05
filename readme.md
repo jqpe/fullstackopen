@@ -16,17 +16,13 @@ You can use `git branch` to list the branches or GUI like GitHub's.
 
 ## Branches
 
-<details>
-<summary>part 0</summary>
+### part 0
 
 Exercises 0—6:
 
 - https://github.com/jqpe/fullstackopen/tree/part-0
 
-</details>
-
-<details>
-<summary>part 1</summary>
+### part 1
 
 Exercises 1—5:
 
@@ -39,10 +35,8 @@ Exercises 6—11:
 Exercises 12—14:
 
 - https://github.com/jqpe/fullstackopen/tree/part-1/anecdotes
-</details>
 
-<details>
-<summary>part 2</summary>
+### part 2
 Exercises 1—5:
 
 - https://github.com/jqpe/fullstackopen/tree/part-2/course-info
@@ -54,30 +48,18 @@ Exercises 6—17:
 Exercises 18—20:
 
 - https://github.com/jqpe/fullstackopen/tree/part-2/countries
-</details>
 
-<details>
-<summary>part 3</summary>
+### part 3
 Exercises 1—22:
 
 - https://github.com/jqpe/fullstackopen/tree/part-3
 
-</details>
-
-<details>
-<summary>part 4</summary>
+### part 4
 Exercises 1—23:
 
 - https://github.com/jqpe/fullstackopen/tree/part-4
 
-</details>
-
-<details>
-<summary>part 5</summary>
-
-> The commits might look a bit funny as I had to juggle between the branches to add and remove stuff (especially in the e2e section).
-> The branches satisfy exercise requirements even though they might have extraneous code not related to those exercises.
-
+### part 5
 
 Exercises 1—16:
 
@@ -90,10 +72,7 @@ Misc:
 - https://github.com/jqpe/fullstackopen/tree/part-5/backend
 
 
-</details>
-
-<details>
-<summary>part 6</summary>
+### part 6
 Exercises 1—2:
 
 - https://github.com/jqpe/fullstackopen/tree/part-6/unicafe
@@ -106,10 +85,7 @@ Exercises 20-24:
 
 - https://github.com/jqpe/fullstackopen/tree/part-6/anecdotes-query
 
-</details>
-
-<details>
-<summary>part 7</summary>
+### part 7
 Exercises 1—6:
 
 - https://github.com/jqpe/fullstackopen/tree/part-7/routed-anecdotes
@@ -126,5 +102,3 @@ Exercises 9—21:
 
 - https://github.com/jqpe/fullstackopen/tree/part-7/blog
 - backend comment functionality: https://github.com/jqpe/fullstackopen/commit/e7891b99626d9e33a7f88a186f6de12d0d6d78ff
-
-</details>
