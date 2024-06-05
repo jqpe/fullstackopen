@@ -6,7 +6,7 @@ const Blog = ({ blog, handleLikeButtonClick, handleBlogDelete, username }) => {
   return (
     <details
       open={open}
-      onClick={event => event.preventDefault()}
+      onClick={(event) => event.preventDefault()}
       data-testid="blog"
     >
       <summary>

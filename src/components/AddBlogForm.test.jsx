@@ -5,7 +5,7 @@ import { AddBlogForm } from './AddBlogForm'
 test('callback is called with expected properties', async () => {
   const onSubmit = vi.fn()
   const { container } = render(
-    <AddBlogForm handleSubmit={onSubmit} user={{ name: 'martti' }} />
+    <AddBlogForm handleSubmit={onSubmit} user={{ name: 'martti' }} />,
   )
 
   const user = userEvent.setup()
@@ -23,6 +23,6 @@ test('callback is called with expected properties', async () => {
   expect(onSubmit).toHaveBeenCalledWith({
     title: 'test',
     author: 'test',
-    url: 'test'
+    url: 'test',
   })
 })

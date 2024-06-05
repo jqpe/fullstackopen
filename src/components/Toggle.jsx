@@ -5,7 +5,7 @@ export function Toggle({
   onOpenChange,
   children,
   closePrompt,
-  openPrompt
+  openPrompt,
 }) {
   return (
     <>
@@ -22,5 +22,5 @@ Toggle.propTypes = {
   onOpenChange: PropTypes.func.isRequired,
   children: PropTypes.element.isRequired,
   closePrompt: PropTypes.string.isRequired,
-  openPrompt: PropTypes.string.isRequired
+  openPrompt: PropTypes.string.isRequired,
 }

@@ -9,12 +9,12 @@ const mock = Object.freeze({
     author: 'cool guy',
     likes: 0,
     user: {
-      username: 'pekka'
-    }
+      username: 'pekka',
+    },
   },
   handleBlogDelete: vi.fn(),
   handleLikeButtonClick: vi.fn(),
-  username: 'pekka'
+  username: 'pekka',
 })
 
 test('is in collased state by default', () => {
@@ -54,7 +54,7 @@ test('can be opened with button click', async () => {
 test('like callback works', async () => {
   const onClick = vi.fn()
   const { container } = render(
-    <Blog {...mock} handleLikeButtonClick={onClick} />
+    <Blog {...mock} handleLikeButtonClick={onClick} />,
   )
   const likeButton = container.querySelector('.likes-container > button')
 

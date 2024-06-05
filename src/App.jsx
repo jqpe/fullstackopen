@@ -26,13 +26,13 @@ const App = () => {
   const [isToggleVisible, setIsToggleVisible] = useState(false)
   const [notification, setNotification] = useState({
     message: null,
-    variant: 'success'
+    variant: 'success',
   })
 
   useEffect(() => {
     blogService
       .getAll()
-      .then(blogs => setBlogs(blogs))
+      .then((blogs) => setBlogs(blogs))
       .catch(() => {
         setNotification({ message: 'could not get posts', variant: 'error' })
       })
@@ -40,62 +40,62 @@ const App = () => {
 
   const onSubmit = ({ username, password }) => {
     login({ username, password })
-      .then(response => {
+      .then((response) => {
         window.localStorage.setItem('user', JSON.stringify(response.data))
         setUser(response.data)
 
         setNotification({
           message: `welcome back ${user.username}!`,
-          variant: 'success'
+          variant: 'success',
         })
       })
-      .catch(error => {
+      .catch((error) => {
         if (error instanceof AxiosError) {
           return setNotification({
             message: error.response.data.error,
-            variant: 'error'
+            variant: 'error',
           })
         }
       })
   }
 
-  const onLikeButtonClick = blog => {
+  const onLikeButtonClick = (blog) => {
     blogService
       .update({ ...blog, likes: blog.likes + 1 })
-      .then(response => {
+      .then((response) => {
         const copy = [...blogs]
-        const index = copy.findIndex(v => v.id === response.data.id)
+        const index = copy.findIndex((v) => v.id === response.data.id)
         copy[index] = response.data
 
         setBlogs(copy)
       })
-      .catch(error => {
+      .catch((error) => {
         if (error instanceof AxiosError) {
           setNotification({
             message: error.response.data.error,
-            variant: 'error'
+            variant: 'error',
           })
         }
       })
   }
 
-  const onBlogDelete = blog => {
+  const onBlogDelete = (blog) => {
     if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
       blogService
         .remove(blog, user.token)
         .then(() => {
           setNotification({
             message: `removed ${blog.title}`,
-            variant: 'success'
+            variant: 'success',
           })
 
-          setBlogs(blogs.filter(v => v.id !== blog.id))
+          setBlogs(blogs.filter((v) => v.id !== blog.id))
         })
-        .catch(error => {
+        .catch((error) => {
           if (error instanceof AxiosError) {
             setNotification({
               message: error.response.data.error,
-              variant: 'error'
+              variant: 'error',
             })
           }
         })
@@ -105,21 +105,21 @@ const App = () => {
   const onAddBlog = async ({ url, title, author }) => {
     let isSuccess = false
     await addBlog({ url, title, author, token: user.token })
-      .then(response => {
+      .then((response) => {
         const blog = response.data
         setBlogs([...blogs, blog])
         setNotification({
           message: `A new blog ${blog.title} by ${blog.author} added`,
-          variant: 'success'
+          variant: 'success',
         })
 
         isSuccess = true
       })
-      .catch(error => {
+      .catch((error) => {
         if (error instanceof AxiosError) {
           setNotification({
             message: error.response.data.error,
-            variant: 'error'
+            variant: 'error',
           })
         }
       })
@@ -168,15 +168,15 @@ const App = () => {
       >
         <AddBlogForm
           user={user}
-          handleSubmit={async blog => {
-            onAddBlog(blog).then(success => setIsToggleVisible(!success))
+          handleSubmit={async (blog) => {
+            onAddBlog(blog).then((success) => setIsToggleVisible(!success))
           }}
         />
       </Toggle>
 
       {blogs
         .toSorted((a, b) => b.likes - a.likes)
-        .map(blog => (
+        .map((blog) => (
           <Blog
             username={user.username}
             key={blog.id}

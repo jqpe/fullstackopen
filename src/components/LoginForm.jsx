@@ -6,7 +6,7 @@ export function LoginForm({ handleSubmit }) {
 
   return (
     <form
-      onSubmit={event => {
+      onSubmit={(event) => {
         event.preventDefault()
         handleSubmit({ username, password })
       }}
