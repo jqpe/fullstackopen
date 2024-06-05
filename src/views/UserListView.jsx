@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import usersService from '../services/users'
+import { Link } from 'react-router-dom'
 
 export default function UserListView() {
   const [users, setUsers] = useState(null)
@@ -14,15 +15,19 @@ export default function UserListView() {
       {users && (
         <table>
           <thead>
-            <td></td>
-            <td>
-              <b>blogs created</b>
-            </td>
+            <tr>
+              <td></td>
+              <td>
+                <b>blogs created</b>
+              </td>
+            </tr>
           </thead>
           <tbody>
             {users.map((user) => (
               <tr key={user.id}>
-                <td>{user.name}</td>
+                <td>
+                  <Link to={`/user/${user.id}`}>{user.name}</Link>
+                </td>
                 <td>{user.blogs.length}</td>
               </tr>
             ))}
