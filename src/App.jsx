@@ -8,7 +8,7 @@ import { Notification } from './components/Notification'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { login, logout } from './reducers/userReducer'
 
-import { Route, Routes, useMatch } from 'react-router-dom'
+import { Link, Route, Routes, useMatch } from 'react-router-dom'
 import './App.css'
 import ListView from './views/ListView'
 import UserListView from './views/UserListView'
@@ -51,11 +51,14 @@ const App = () => {
 
   return (
     <div>
+      <nav className="main-navbar">
+        <Link to="/">blogs</Link>
+        <Link to="/users">users</Link>
+        {user.name} logged in <button onClick={onLogout}>logout</button>
+      </nav>
       <h2>blogs</h2>
       <Notification />
-      <div>
-        {user.name} logged in <button onClick={onLogout}>logout</button>
-      </div>
+
       <Routes>
         <Route path="/" element={<ListView />} />
         <Route path="/users" element={<UserListView />} />

@@ -15,19 +15,12 @@
   display: block;
 }
 
-details > summary,
-details > summary:first-of-type {
-  all: unset;
-  display: block;
-}
-
-details {
-  border: 1px solid gray;
-  padding: 0.7rem 0.5rem;
-  margin-block: 0.5rem;
-}
-
-details > * {
-  line-height: 120%;
-  margin: 0;
+.main-navbar {
+  top: 0;
+  position: sticky;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  background-color: ghostwhite;
+  padding: 0.5rem 0.8rem;
 }
