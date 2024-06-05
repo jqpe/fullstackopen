@@ -11,7 +11,7 @@ import { login, logout } from './reducers/userReducer'
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import ListView from './views/ListView'
-import UserView from './views/UserView'
+import UserListView from './views/UserListView'
 
 const App = () => {
   const user = useSelector((state) => state.user)
@@ -50,7 +50,7 @@ const App = () => {
       </div>
       <Routes>
         <Route path="/" element={<ListView />} />
-        <Route path="/users" element={<UserView />} />
+        <Route path="/users" element={<UserListView />} />
       </Routes>
     </div>
   )

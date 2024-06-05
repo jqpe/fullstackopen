@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import usersService from '../services/users'
 
-export default function UserView() {
+export default function UserListView() {
   const [users, setUsers] = useState(null)
 
   useEffect(() => {
