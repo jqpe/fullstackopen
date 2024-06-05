@@ -8,12 +8,41 @@ import { Notification } from './components/Notification'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { login, logout } from './reducers/userReducer'
 
-import { Link, Route, Routes, useMatch } from 'react-router-dom'
+import {
+  AppBar,
+  Container,
+  Toolbar,
+  Typography,
+  Link,
+  Button,
+  Avatar,
+  Box,
+  Tooltip,
+} from '@mui/material'
+
+import { Link as RouterLink, Route, Routes, useMatch } from 'react-router-dom'
 import './App.css'
 import ListView from './views/ListView'
 import UserListView from './views/UserListView'
 import UserView from './views/UserView'
 import BlogView from './views/BlogView'
+
+/**
+ * Returns initials from name, up to limit (default 3).
+ *
+ * @param {string} name
+ */
+const getInitials = (name, limit = 3) => {
+  const parts = name.split(' ')
+  let initials = ''
+
+  for (const part of parts.slice(0, limit)) {
+    if (part.length > 0 && part !== '') {
+      initials += part[0]
+    }
+  }
+  return initials
+}
 
 const App = () => {
   const user = useSelector((state) => state.user)
@@ -39,33 +68,54 @@ const App = () => {
 
   if (!user) {
     return (
-      <>
+      <Container maxWidth="md" sx={{ mb: 'auto' }}>
         <h2>login to application</h2>
 
         <Notification />
 
         <LoginForm handleSubmit={onLogin} />
-      </>
+      </Container>
     )
   }
 
   return (
-    <div>
-      <nav className="main-navbar">
-        <Link to="/">blogs</Link>
-        <Link to="/users">users</Link>
-        {user.name} logged in <button onClick={onLogout}>logout</button>
-      </nav>
-      <h2>blogs</h2>
-      <Notification />
+    <main>
+      <AppBar variant="elevation" position="sticky" color="default">
+        <Container maxWidth="md">
+          <Toolbar
+            variant="dense"
+            sx={{ display: 'flex', justifyContent: 'space-between' }}
+          >
+            <Box sx={{ display: 'flex', gap: '.5rem' }}>
+              <Link component={RouterLink} to="/" color="inherit">
+                blogs
+              </Link>
+              <Link component={RouterLink} to="/users" color="inherit">
+                users
+              </Link>
+            </Box>
+            <Box sx={{ display: 'flex' }}>
+              <Tooltip title={`${user.name} logged in`}>
+                <Avatar>{getInitials(user.name)}</Avatar>
+              </Tooltip>
 
-      <Routes>
-        <Route path="/" element={<ListView />} />
-        <Route path="/users" element={<UserListView />} />
-        <Route path="/user/:id" element={<UserView id={userId} />} />
-        <Route path="/blogs/:id" element={<BlogView id={blogId} />} />
-      </Routes>
-    </div>
+              <Button onClick={onLogout}>logout</Button>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      <Container maxWidth="md">
+        <Typography variant="h2">blogs</Typography>
+        <Notification />
+        <Routes>
+          <Route path="/" element={<ListView />} />
+          <Route path="/users" element={<UserListView />} />
+          <Route path="/user/:id" element={<UserView id={userId} />} />
+          <Route path="/blogs/:id" element={<BlogView id={blogId} />} />
+        </Routes>
+      </Container>
+    </main>
   )
 }
 

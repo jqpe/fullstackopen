@@ -2,8 +2,9 @@
 @import '@fontsource/roboto/400.css';
 @import '@fontsource/roboto/500.css';
 @import '@fontsource/roboto/700.css';
+@import url('./styles/reset.css');
 
-:root {
+#root {
   font-family:
     Roboto,
     system-ui,
@@ -16,14 +17,4 @@
     'Open Sans',
     'Helvetica Neue',
     sans-serif;
-}
-
-.main-navbar {
-  top: 0;
-  position: sticky;
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  background-color: ghostwhite;
-  padding: 0.5rem 0.8rem;
 }

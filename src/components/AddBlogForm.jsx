@@ -1,3 +1,4 @@
+import { Box, Button, FormLabel, Typography } from '@mui/material'
 import { useState } from 'react'
 
 export function AddBlogForm({ user, handleSubmit }) {
@@ -8,46 +9,34 @@ export function AddBlogForm({ user, handleSubmit }) {
   if (!user) return null
 
   return (
-    <div>
-      <h2>create new</h2>
+    <Box>
       <form
         onSubmit={(event) => {
           event.preventDefault()
           handleSubmit({ title, author, url })
         }}
       >
-        <div>
-          title
-          <input
-            data-testid="title"
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author
-          <input
-            data-testid="author"
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url
-          <input
-            data-testid="url"
-            type="url"
-            value={url}
-            name="Url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
+        <Typography variant="h3">create new blog</Typography>
+        <FormInput name="name" setValue={setTitle} value={title} />
+        <FormInput name="author" setValue={setAuthor} value={author} />
+        <FormInput name="url" setValue={setUrl} value={url} />
+
+        <Button type="submit">create</Button>
       </form>
-    </div>
+    </Box>
+  )
+}
+function FormInput({ value, setValue, name }) {
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+      <FormLabel id={name}>{name}</FormLabel>
+      <input
+        type="text"
+        value={value}
+        id={name}
+        name={name}
+        onChange={({ target }) => setValue(target.value)}
+      />
+    </Box>
   )
 }

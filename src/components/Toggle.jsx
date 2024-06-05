@@ -1,3 +1,4 @@
+import { Button } from '@mui/material'
 import PropTypes from 'prop-types'
 
 export function Toggle({
@@ -10,9 +11,13 @@ export function Toggle({
   return (
     <>
       {open ? children : null}
-      <button onClick={() => onOpenChange(!open)}>
+      <Button
+        variant={open ? 'text' : 'contained'}
+        color={open ? 'secondary' : 'primary'}
+        onClick={() => onOpenChange(!open)}
+      >
         {open ? closePrompt : openPrompt}
-      </button>
+      </Button>
     </>
   )
 }
