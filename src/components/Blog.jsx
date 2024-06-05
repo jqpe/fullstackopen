@@ -1,9 +1,10 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@mui/material'
+import { Link as RouterLink } from 'react-router-dom'
 
 const Blog = ({ blog }) => {
   return (
     <article>
-      <Link to={`/blogs/${blog.id}`}>
+      <Link component={RouterLink} to={`/blogs/${blog.id}`}>
         {blog.title} {blog.author}
       </Link>
     </article>

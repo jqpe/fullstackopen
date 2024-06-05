@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import usersService from '../services/users'
-import { Link } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
+import { Link } from '@mui/material'
 
 export default function UserListView() {
   const [users, setUsers] = useState(null)
@@ -26,7 +27,9 @@ export default function UserListView() {
             {users.map((user) => (
               <tr key={user.id}>
                 <td>
-                  <Link to={`/user/${user.id}`}>{user.name}</Link>
+                  <Link component={RouterLink} to={`/user/${user.id}`}>
+                    {user.name}
+                  </Link>
                 </td>
                 <td>{user.blogs.length}</td>
               </tr>
