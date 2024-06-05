@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { logout } from '../reducers/userReducer'
+
 import { createBlog, deleteBlog, updateBlog } from '../reducers/blogsReducer'
 import { Toggle } from '../components/Toggle'
 import { AddBlogForm } from '../components/AddBlogForm'
@@ -11,9 +11,6 @@ export default function ListView() {
   const user = useSelector((state) => state.user)
   const blogs = useSelector((state) => state.blogs)
   const [isToggleVisible, setIsToggleVisible] = useState(false)
-  const onLogout = () => {
-    dispatch(logout())
-  }
 
   const onLikeButtonClick = (blog) => {
     dispatch(updateBlog({ ...blog, likes: blog.likes + 1 }))
@@ -37,9 +34,6 @@ export default function ListView() {
 
   return (
     <>
-      <div>
-        {user.name} logged in <button onClick={onLogout}>logout</button>
-      </div>
       <Toggle
         open={isToggleVisible}
         onOpenChange={setIsToggleVisible}
