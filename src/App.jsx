@@ -5,13 +5,18 @@ import Blog from './components/Blog'
 import { LoginForm } from './components/LoginForm'
 
 import { AxiosError } from 'axios'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Notification } from './components/Notification'
-import blogService, { addBlog } from './services/blogs'
 import { login } from './services/login'
 
 import './App.css'
 import { Toggle } from './components/Toggle'
+import {
+  createBlog,
+  deleteBlog,
+  initializeBlogs,
+  updateBlog,
+} from './reducers/blogsReducer'
 import { showNotification } from './reducers/notificationReducer'
 
 const getPersistedUser = () => {
@@ -23,23 +28,13 @@ const getPersistedUser = () => {
 }
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector((state) => state.blogs)
   const [user, setUser] = useState(getPersistedUser())
   const [isToggleVisible, setIsToggleVisible] = useState(false)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => setBlogs(blogs))
-      .catch(() => {
-        dispatch(
-          showNotification({
-            message: 'could not get posts',
-            variant: 'error',
-          }),
-        )
-      })
+    dispatch(initializeBlogs())
   }, [dispatch])
 
   const onSubmit = ({ username, password }) => {
@@ -68,79 +63,23 @@ const App = () => {
   }
 
   const onLikeButtonClick = (blog) => {
-    blogService
-      .update({ ...blog, likes: blog.likes + 1 })
-      .then((response) => {
-        const copy = [...blogs]
-        const index = copy.findIndex((v) => v.id === response.data.id)
-        copy[index] = response.data
-
-        setBlogs(copy)
-      })
-      .catch((error) => {
-        if (error instanceof AxiosError) {
-          dispatch(
-            showNotification({
-              message: error.response.data.error,
-              variant: 'error',
-            }),
-          )
-        }
-      })
+    dispatch(updateBlog({ ...blog, likes: blog.likes + 1 }))
   }
 
   const onBlogDelete = (blog) => {
     if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
-      blogService
-        .remove(blog, user.token)
-        .then(() => {
-          dispatch(
-            showNotification({
-              message: `removed ${blog.title}`,
-              variant: 'success',
-            }),
-          )
-
-          setBlogs(blogs.filter((v) => v.id !== blog.id))
-        })
-        .catch((error) => {
-          dispatch(
-            showNotification({
-              message: error.response.data.error,
-              variant: 'error',
-            }),
-          )
-        })
+      dispatch(deleteBlog(blog, user.token))
     }
   }
 
   const onAddBlog = async ({ url, title, author }) => {
-    let isSuccess = false
-    await addBlog({ url, title, author, token: user.token })
-      .then((response) => {
-        const blog = response.data
-        setBlogs([...blogs, blog])
-        dispatch(
-          showNotification({
-            message: `A new blog ${blog.title} by ${blog.author} added`,
-            variant: 'success',
-          }),
-        )
-
-        isSuccess = true
-      })
-      .catch((error) => {
-        if (error instanceof AxiosError) {
-          dispatch(
-            showNotification({
-              message: error.response.data.error,
-              variant: 'error',
-            }),
-          )
-        }
-      })
-
-    return isSuccess
+    const blog = { url, title, author, token: user.token }
+    // dispatch is thenable but not a promise or an async function
+    // we can return data from `createBlog` that will be used as return
+    // value of dispatch
+    dispatch(createBlog(blog)).then(
+      (success) => success && setIsToggleVisible(false),
+    )
   }
 
   if (!user) {
