@@ -107,3 +107,24 @@ Exercises 20-24:
 - https://github.com/jqpe/fullstackopen/tree/part-6/anecdotes-query
 
 </details>
+
+<details>
+<summary>part 7</summary>
+Exercises 1—6:
+
+- https://github.com/jqpe/fullstackopen/tree/part-7/routed-anecdotes
+
+Exercise 7:
+
+- https://github.com/jqpe/fullstackopen/tree/part-7/countries
+
+Exercise 8:
+
+- https://github.com/jqpe/fullstackopen/tree/part-7/ultimate-hooks
+
+Exercises 9—21:
+
+- https://github.com/jqpe/fullstackopen/tree/part-7/blog
+- backend comment functionality: https://github.com/jqpe/fullstackopen/commit/e7891b99626d9e33a7f88a186f6de12d0d6d78ff
+
+</details>
