@@ -1,6 +1,7 @@
 /* eslint react/prop-types: 0 */
 
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useMatch } from 'react-router-dom'
 
 import { Link, Route, Routes } from 'react-router-dom'
@@ -147,11 +148,15 @@ const App = () => {
     }
   ])
 
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState(null)
+  const navigate = useNavigate()
 
   const addNew = anecdote => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    navigate('/')
+    setNotification(`Created anecdote: '${anecdote.content}'`)
+    setTimeout(() => setNotification(null), 5000)
   }
 
   const match = useMatch('/anecdote/:id')
@@ -174,6 +179,7 @@ const App = () => {
     <>
       <h1>Software anecdotes</h1>
       <Menu />
+      {notification}
       <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route
