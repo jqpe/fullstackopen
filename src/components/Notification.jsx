@@ -1,22 +1,22 @@
 import { useState } from 'react'
 import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
-export function Notification(props) {
-  const { message, variant = 'success' } = props
-  const initial = `notification ${variant}`
+export function Notification() {
+  const notification = useSelector((state) => state.notification)
 
-  const [className, setClassname] = useState(initial)
+  const [className, setClassname] = useState(notification.variant)
 
   useEffect(() => {
-    if (!message) return
-    setClassname(initial)
+    if (!notification.message) return
+    setClassname(notification.variant)
 
     setTimeout(() => setClassname(undefined), 3000)
-  }, [initial, message])
+  }, [notification])
 
-  if (!message || !className) {
+  if (!notification.message || !className) {
     return null
   }
 
-  return <aside className={className}>{message}</aside>
+  return <aside className={className}>{notification.message}</aside>
 }

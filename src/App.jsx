@@ -4,13 +4,15 @@ import { AddBlogForm } from './components/AddBlogForm'
 import Blog from './components/Blog'
 import { LoginForm } from './components/LoginForm'
 
+import { AxiosError } from 'axios'
+import { useDispatch } from 'react-redux'
+import { Notification } from './components/Notification'
 import blogService, { addBlog } from './services/blogs'
 import { login } from './services/login'
-import { Notification } from './components/Notification'
-import { AxiosError } from 'axios'
 
 import './App.css'
 import { Toggle } from './components/Toggle'
+import { showNotification } from './reducers/notificationReducer'
 
 const getPersistedUser = () => {
   try {
@@ -24,19 +26,21 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(getPersistedUser())
   const [isToggleVisible, setIsToggleVisible] = useState(false)
-  const [notification, setNotification] = useState({
-    message: null,
-    variant: 'success',
-  })
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService
       .getAll()
       .then((blogs) => setBlogs(blogs))
       .catch(() => {
-        setNotification({ message: 'could not get posts', variant: 'error' })
+        dispatch(
+          showNotification({
+            message: 'could not get posts',
+            variant: 'error',
+          }),
+        )
       })
-  }, [])
+  }, [dispatch])
 
   const onSubmit = ({ username, password }) => {
     login({ username, password })
@@ -44,17 +48,21 @@ const App = () => {
         window.localStorage.setItem('user', JSON.stringify(response.data))
         setUser(response.data)
 
-        setNotification({
-          message: `welcome back ${user.username}!`,
-          variant: 'success',
-        })
+        dispatch(
+          showNotification({
+            message: `welcome back ${user.username}!`,
+            variant: 'success',
+          }),
+        )
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
-          return setNotification({
-            message: error.response.data.error,
-            variant: 'error',
-          })
+          dispatch(
+            showNotification({
+              message: error.response.data.error,
+              variant: 'error',
+            }),
+          )
         }
       })
   }
@@ -71,10 +79,12 @@ const App = () => {
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
-          setNotification({
-            message: error.response.data.error,
-            variant: 'error',
-          })
+          dispatch(
+            showNotification({
+              message: error.response.data.error,
+              variant: 'error',
+            }),
+          )
         }
       })
   }
@@ -84,20 +94,22 @@ const App = () => {
       blogService
         .remove(blog, user.token)
         .then(() => {
-          setNotification({
-            message: `removed ${blog.title}`,
-            variant: 'success',
-          })
+          dispatch(
+            showNotification({
+              message: `removed ${blog.title}`,
+              variant: 'success',
+            }),
+          )
 
           setBlogs(blogs.filter((v) => v.id !== blog.id))
         })
         .catch((error) => {
-          if (error instanceof AxiosError) {
-            setNotification({
+          dispatch(
+            showNotification({
               message: error.response.data.error,
               variant: 'error',
-            })
-          }
+            }),
+          )
         })
     }
   }
@@ -108,19 +120,23 @@ const App = () => {
       .then((response) => {
         const blog = response.data
         setBlogs([...blogs, blog])
-        setNotification({
-          message: `A new blog ${blog.title} by ${blog.author} added`,
-          variant: 'success',
-        })
+        dispatch(
+          showNotification({
+            message: `A new blog ${blog.title} by ${blog.author} added`,
+            variant: 'success',
+          }),
+        )
 
         isSuccess = true
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
-          setNotification({
-            message: error.response.data.error,
-            variant: 'error',
-          })
+          dispatch(
+            showNotification({
+              message: error.response.data.error,
+              variant: 'error',
+            }),
+          )
         }
       })
 
@@ -131,12 +147,9 @@ const App = () => {
     return (
       <>
         <h2>login to application</h2>
-        {notification.message && (
-          <Notification
-            message={notification.message}
-            variant={notification.variant}
-          />
-        )}
+
+        <Notification />
+
         <LoginForm handleSubmit={onSubmit} />
       </>
     )
@@ -145,10 +158,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification
-        message={notification.message}
-        variant={notification.variant}
-      />
+      <Notification />
       <div>
         {user.name} logged in{' '}
         <button
