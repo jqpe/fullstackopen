@@ -51,7 +51,7 @@ blogs.put('/:id', async (req, res) => {
     // ensures we return the updated blog, by default mongoose returns the altered one
     new: true
   })
-  const withUser = await blog.populate("user")
+  const withUser = await blog.populate('user')
 
   res.json(withUser)
 })
