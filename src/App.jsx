@@ -77,7 +77,7 @@ const App = () => {
       <Toggle
         open={isToggleVisible}
         onOpenChange={setIsToggleVisible}
-        openPrompt="new note"
+        openPrompt="new blog"
         closePrompt="cancel"
       >
         <AddBlogForm
