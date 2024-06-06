@@ -10,7 +10,7 @@ const Authors = () => {
   })
   const authors = result.data?.allAuthors ?? []
 
-  const name = useField('name')
+  const name = useField('name', authors.at(0)?.name)
   const born = useField('born')
 
   const onUpdateAuthor = event => {
@@ -21,11 +21,10 @@ const Authors = () => {
         name: name.field.value,
         setBornTo: Number(born.field.value)
       }
-    }).then(res => {
-      if (!res.data.editAuthor) return
-      name.clear()
-      born.clear()
     })
+
+    born.clear()
+    name.clear(authors[0].name)
   }
 
   return (
@@ -36,7 +35,11 @@ const Authors = () => {
       <form onSubmit={onUpdateAuthor}>
         <div>
           <label htmlFor="name">name</label>
-          <input type="text" {...name.field} />
+          <select autoComplete="off" {...name.field}>
+            {authors.map(author => (
+              <option key={author.name}>{author.name}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor="born">born</label>
