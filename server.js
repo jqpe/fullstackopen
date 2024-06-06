@@ -1,89 +1,28 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
-const { randomUUID } = require('node:crypto')
+const mongoose = require('mongoose')
 
-let authors = [
-  {
-    name: 'Robert Martin',
-    id: 'afa51ab0-344d-11e9-a414-719c6709cf3e',
-    born: 1952
-  },
-  {
-    name: 'Martin Fowler',
-    id: 'afa5b6f0-344d-11e9-a414-719c6709cf3e',
-    born: 1963
-  },
-  {
-    name: 'Fyodor Dostoevsky',
-    id: 'afa5b6f1-344d-11e9-a414-719c6709cf3e',
-    born: 1821
-  },
-  {
-    name: 'Joshua Kerievsky', // birthyear not known
-    id: 'afa5b6f2-344d-11e9-a414-719c6709cf3e'
-  },
-  {
-    name: 'Sandi Metz', // birthyear not known
-    id: 'afa5b6f3-344d-11e9-a414-719c6709cf3e'
-  }
-]
+const Book = require('./models/book.js')
+const Author = require('./models/author.js')
 
-let books = [
-  {
-    title: 'Clean Code',
-    published: 2008,
-    author: 'Robert Martin',
-    id: 'afa5b6f4-344d-11e9-a414-719c6709cf3e',
-    genres: ['refactoring']
-  },
-  {
-    title: 'Agile software development',
-    published: 2002,
-    author: 'Robert Martin',
-    id: 'afa5b6f5-344d-11e9-a414-719c6709cf3e',
-    genres: ['agile', 'patterns', 'design']
-  },
-  {
-    title: 'Refactoring, edition 2',
-    published: 2018,
-    author: 'Martin Fowler',
-    id: 'afa5de00-344d-11e9-a414-719c6709cf3e',
-    genres: ['refactoring']
-  },
-  {
-    title: 'Refactoring to patterns',
-    published: 2008,
-    author: 'Joshua Kerievsky',
-    id: 'afa5de01-344d-11e9-a414-719c6709cf3e',
-    genres: ['refactoring', 'patterns']
-  },
-  {
-    title: 'Practical Object-Oriented Design, An Agile Primer Using Ruby',
-    published: 2012,
-    author: 'Sandi Metz',
-    id: 'afa5de02-344d-11e9-a414-719c6709cf3e',
-    genres: ['refactoring', 'design']
-  },
-  {
-    title: 'Crime and punishment',
-    published: 1866,
-    author: 'Fyodor Dostoevsky',
-    id: 'afa5de03-344d-11e9-a414-719c6709cf3e',
-    genres: ['classic', 'crime']
-  },
-  {
-    title: 'Demons',
-    published: 1872,
-    author: 'Fyodor Dostoevsky',
-    id: 'afa5de04-344d-11e9-a414-719c6709cf3e',
-    genres: ['classic', 'revolution']
-  }
-]
+mongoose.set('strictQuery', false)
+
+const MONGODB_URI = process.env.MONGODB_URI
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log('connected to MongoDB')
+  })
+  .catch(error => {
+    console.error('error connection to MongoDB:', error.message)
+    process.exit(1)
+  })
 
 const typeDefs = `
   type Book {
     title: String!
-    author: String!
+    author: Author!
     published: Int!
     id: ID!
     genres: [String!]!
@@ -117,9 +56,9 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (_, args) => {
+    bookCount: async () => Book.collection.countDocuments(),
+    authorCount: async () => Author.collection.countDocuments(),
+    allBooks: async (_, args) => {
       const matchAuthor = books => {
         return books.filter(({ author }) => author === args.author)
       }
@@ -129,43 +68,43 @@ const resolvers = {
 
       switch (true) {
         case args.author && args.genre:
-          return books.filter(matchAuthor).filter(matchGenre)
+          return [].filter(matchAuthor).filter(matchGenre)
         case !!args.author:
-          return books.filter(matchAuthor)
+          return [].filter(matchAuthor)
         case !!args.genre:
-          return books.filter(matchGenre)
+          return [].filter(matchGenre)
 
         default:
-          return books
+          return Book.find({})
       }
     },
-    allAuthors: () => authors
+    allAuthors: async () => Author.find({})
   },
   Mutation: {
-    addBook: (_, args) => {
-      const book = { ...args, id: randomUUID() }
-      books.push(book)
-      if (!(book.author in authors)) {
-        authors.push({ name: args.author, id: randomUUID() })
-      }
+    addBook: async (_, args) => {
+      // creates the author if it doesn't exist yet, otherwise just returns it
+      const author = await Author.findOneAndUpdate(
+        { name: args.author },
+        {},
+        { upsert: true, new: true }
+      )
+      const book = await Book.create({ ...args, author: author._id })
 
       return book
     },
-    editAuthor: (_, args) => {
-      const author = authors.find(({ name }) => name === args.name)
-      if (!author) {
-        return null
-      }
-      if (args.setBornTo) {
-        author.born = args.setBornTo
-      }
+    editAuthor: async (_, args) => {
+      const author = await Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.setBornTo },
+        { new: true }
+      )
 
       return author
     }
   },
   Author: {
-    bookCount(root) {
-      return books.filter(book => book.author === root.name).length
+    async bookCount() {
+      throw new TypeError('unimplemented')
     }
   }
 }
