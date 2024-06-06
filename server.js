@@ -62,13 +62,23 @@ const resolvers = {
     allBooks: async (_, args) => {
       const params = {}
       if (args.author) {
+        if (args.author.length < 4) {
+          throw new GraphQLError(
+            'author needs to be at least 4 characters long',
+            {
+              extensions: {
+                code: 'BAD_USER_INPUT',
+                invalidArgs: args.author
+              }
+            }
+          )
+        }
         const author = await Author.findOne({ name: args.author }, { id: 1 })
         if (!author) {
           throw new GraphQLError('no author with name', {
             extensions: {
               code: 'BAD_USER_INPUT',
-              invalidArgs: args.name,
-
+              invalidArgs: args.name
             }
           })
         }
@@ -84,6 +94,27 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (_, args) => {
+      if (args.author.length < 4) {
+        throw new GraphQLError(
+          'author needs to be at least 4 characters long',
+          {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.author
+            }
+          }
+        )
+      }
+
+      if (args.title.length < 5) {
+        throw new GraphQLError('title needs to be at least 5 characters long', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.title
+          }
+        })
+      }
+
       // creates the author if it doesn't exist yet, otherwise just returns it
       const author = await Author.findOneAndUpdate(
         { name: args.author },
