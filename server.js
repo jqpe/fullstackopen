@@ -1,5 +1,6 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
+const { randomUUID } = require('node:crypto')
 
 let authors = [
   {
@@ -85,7 +86,6 @@ const typeDefs = `
     author: String!
     published: Int!
     id: ID!
-    # might be beneficial to refactor this into Genre type?
     genres: [String!]!
   }
 
@@ -101,6 +101,15 @@ const typeDefs = `
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+  }
+
+  type Mutation {
+    addBook(
+        title: String!
+        author: String!
+        published: Int!
+        genres: [String!]!
+    ): Book
   }
 `
 
@@ -129,6 +138,17 @@ const resolvers = {
       }
     },
     allAuthors: () => authors
+  },
+  Mutation: {
+    addBook: (_, args) => {
+      const book = { ...args, id: randomUUID() }
+      books.push(book)
+      if (!(book.author in authors)) {
+        authors.push({ name: args.author, id: randomUUID() })
+      }
+
+      return book
+    }
   },
   Author: {
     bookCount(root) {
