@@ -1,10 +1,12 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
 const mongoose = require('mongoose')
+const { GraphQLError } = require('graphql')
+const jwt = require('jsonwebtoken')
 
 const Book = require('./models/book.js')
 const Author = require('./models/author.js')
-const { GraphQLError } = require('graphql')
+const User = require('./models/user.js')
 
 mongoose.set('strictQuery', false)
 
@@ -29,6 +31,16 @@ const typeDefs = `
     genres: [String!]!
   }
 
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Author {
     name: String!
     id: ID!
@@ -41,6 +53,7 @@ const typeDefs = `
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
   }
 
   type Mutation {
@@ -50,8 +63,15 @@ const typeDefs = `
         published: Int!
         genres: [String!]!
     ): Book
-
     editAuthor(name: String!, setBornTo: Int): Author
+    createUser(
+      username: String!
+      favoriteGenre: String!
+    ): User
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `
 
@@ -63,24 +83,14 @@ const resolvers = {
       const params = {}
       if (args.author) {
         if (args.author.length < 4) {
-          throw new GraphQLError(
+          throw badUserInput(
             'author needs to be at least 4 characters long',
-            {
-              extensions: {
-                code: 'BAD_USER_INPUT',
-                invalidArgs: args.author
-              }
-            }
+            args.author
           )
         }
         const author = await Author.findOne({ name: args.author }, { id: 1 })
         if (!author) {
-          throw new GraphQLError('no author with name', {
-            extensions: {
-              code: 'BAD_USER_INPUT',
-              invalidArgs: args.name
-            }
-          })
+          throw badUserInput('no author with name', args.author)
         }
         params['author'] = author._id
       }
@@ -90,29 +100,37 @@ const resolvers = {
 
       return Book.find(params).populate('author')
     },
-    allAuthors: async () => Author.find({})
+    allAuthors: async () => Author.find({}),
+    me: async (_, __, context) => {
+      // we could create a user named "undefined" and view it's data
+      // without credentials
+      if (context.currentUser) {
+        return null
+      }
+
+      return await User.findOne({ username: context.currentUser?.username })
+    }
   },
   Mutation: {
-    addBook: async (_, args) => {
+    addBook: async (_, args, context) => {
+      if (!context.currentUser) {
+        throw new GraphQLError('requires credentials', {
+          extensions: { code: 'BAD_AUTH' }
+        })
+      }
+
       if (args.author.length < 4) {
-        throw new GraphQLError(
+        throw badUserInput(
           'author needs to be at least 4 characters long',
-          {
-            extensions: {
-              code: 'BAD_USER_INPUT',
-              invalidArgs: args.author
-            }
-          }
+          args.author
         )
       }
 
       if (args.title.length < 5) {
-        throw new GraphQLError('title needs to be at least 5 characters long', {
-          extensions: {
-            code: 'BAD_USER_INPUT',
-            invalidArgs: args.title
-          }
-        })
+        throw badUserInput(
+          'title needs to be at least 5 characters long',
+          args.title
+        )
       }
 
       // creates the author if it doesn't exist yet, otherwise just returns it
@@ -125,7 +143,13 @@ const resolvers = {
 
       return book
     },
-    editAuthor: async (_, args) => {
+    editAuthor: async (_, args, context) => {
+      if (!context.currentUser) {
+        throw new GraphQLError('requires credentials', {
+          extensions: { code: 'BAD_AUTH' }
+        })
+      }
+
       const author = await Author.findOneAndUpdate(
         { name: args.name },
         { born: args.setBornTo },
@@ -133,6 +157,34 @@ const resolvers = {
       )
 
       return author
+    },
+    createUser: async (_, args) => {
+      try {
+        return await User.create({
+          username: args.username,
+          favoriteGenre: args.favoriteGenre
+        })
+      } catch (error) {
+        if (/expected `username` to be unique/.test(error.errors.username)) {
+          throw badUserInput('username is already in use', args.username)
+        }
+
+        throw badUserInput('can not create user', args.username, error)
+      }
+    },
+    login: async (_, args) => {
+      const user = await User.findOne({ username: args.username })
+
+      if (!user || args.password !== 'secret') {
+        throw badUserInput('invalid credentials')
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user._id
+      }
+
+      return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
     }
   },
   Author: {
@@ -142,13 +194,35 @@ const resolvers = {
   }
 }
 
+const badUserInput = (message, arg, error) => {
+  return new GraphQLError(message, {
+    extensions: {
+      code: 'BAD_USER_INPUT',
+      invalidArgs: arg,
+      error
+    }
+  })
+}
+
 const server = new ApolloServer({
   typeDefs,
   resolvers
 })
 
 startStandaloneServer(server, {
-  listen: { port: 4000 }
+  listen: { port: 4000 },
+  context: async ({ req }) => {
+    const auth = req ? req.headers.authorization : null
+    if (auth && auth.startsWith('Bearer ')) {
+      const decodedToken = jwt.verify(
+        auth.replace('Bearer ', ''),
+        process.env.JWT_SECRET
+      )
+
+      const currentUser = await User.findById(decodedToken.id)
+      return { currentUser }
+    }
+  }
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })
