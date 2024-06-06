@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 
 const Book = require('./models/book.js')
 const Author = require('./models/author.js')
+const { GraphQLError } = require('graphql')
 
 mongoose.set('strictQuery', false)
 
@@ -59,24 +60,25 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (_, args) => {
-      const matchAuthor = books => {
-        return books.filter(({ author }) => author === args.author)
+      const params = {}
+      if (args.author) {
+        const author = await Author.findOne({ name: args.author }, { id: 1 })
+        if (!author) {
+          throw new GraphQLError('no author with name', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.name,
+
+            }
+          })
+        }
+        params['author'] = author._id
       }
-      const matchGenre = books => {
-        return books.filter(({ genres }) => genres.includes(args.genre))
+      if (args.genre) {
+        params['genres'] = args.genre
       }
 
-      switch (true) {
-        case args.author && args.genre:
-          return [].filter(matchAuthor).filter(matchGenre)
-        case !!args.author:
-          return [].filter(matchAuthor)
-        case !!args.genre:
-          return [].filter(matchGenre)
-
-        default:
-          return Book.find({})
-      }
+      return Book.find(params).populate('author')
     },
     allAuthors: async () => Author.find({})
   },
@@ -103,8 +105,8 @@ const resolvers = {
     }
   },
   Author: {
-    async bookCount() {
-      throw new TypeError('unimplemented')
+    async bookCount(root) {
+      return await Book.countDocuments({ author: root._id })
     }
   }
 }
