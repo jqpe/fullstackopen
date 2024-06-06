@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client'
 import { useState } from 'react'
 
 import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
+import { useField } from '../hooks/useField'
 
 const NewBook = () => {
   const [addBook] = useMutation(ADD_BOOK, {
@@ -68,13 +69,3 @@ const NewBook = () => {
 }
 
 export default NewBook
-
-const useField = name => {
-  const [value, setValue] = useState('')
-
-  const onChange = event => {
-    setValue(event.target.value)
-  }
-
-  return { field: { onChange, name, value }, clear: () => setValue('') }
-}

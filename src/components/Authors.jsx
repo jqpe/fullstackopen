@@ -1,31 +1,71 @@
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 
-import { ALL_AUTHORS } from '../queries'
+import { useField } from '../hooks/useField'
+import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
 
 const Authors = () => {
   const result = useQuery(ALL_AUTHORS)
+  const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
+    refetchQueries: [{ query: ALL_AUTHORS }]
+  })
   const authors = result.data?.allAuthors ?? []
+
+  const name = useField('name')
+  const born = useField('born')
+
+  const onUpdateAuthor = event => {
+    event.preventDefault()
+
+    updateAuthor({
+      variables: {
+        name: name.field.value,
+        setBornTo: Number(born.field.value)
+      }
+    }).then(res => {
+      if (!res.data.editAuthor) return
+      name.clear()
+      born.clear()
+    })
+  }
 
   return (
     <div>
       <h2>authors</h2>
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>born</th>
-            <th>books</th>
-          </tr>
-          {authors.map(a => (
-            <tr key={a.name}>
-              <td>{a.name}</td>
-              <td>{a.born}</td>
-              <td>{a.bookCount}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table authors={authors} />
+      <h3>Set birth year</h3>
+      <form onSubmit={onUpdateAuthor}>
+        <div>
+          <label htmlFor="name">name</label>
+          <input type="text" {...name.field} />
+        </div>
+        <div>
+          <label htmlFor="born">born</label>
+          <input type="number" {...born.field} />
+        </div>
+        <button type="submit">update author</button>
+      </form>
     </div>
+  )
+}
+
+function Table({ authors }) {
+  return (
+    <table>
+      <tbody>
+        <tr>
+          <th></th>
+          <th>born</th>
+          <th>books</th>
+        </tr>
+        {authors.map(a => (
+          <tr key={a.name}>
+            <td>{a.name}</td>
+            <td>{a.born}</td>
+            <td>{a.bookCount}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   )
 }
 
