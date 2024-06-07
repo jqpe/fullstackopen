@@ -1,10 +1,12 @@
 const { GraphQLError } = require('graphql')
+const jwt = require('jsonwebtoken')
+
+const { PubSub } = require('graphql-subscriptions')
+const pubsub = new PubSub()
 
 const Book = require('./models/book.js')
 const Author = require('./models/author.js')
 const User = require('./models/user.js')
-
-const jwt = require('jsonwebtoken')
 
 const resolvers = {
   Query: {
@@ -65,8 +67,11 @@ const resolvers = {
         { upsert: true, new: true }
       )
       const book = await Book.create({ ...args, author: author._id })
+      const bookWithAuthor = await book.populate('author')
 
-      return book.populate('author')
+      pubsub.publish('BOOK_ADDED', { bookAdded: bookWithAuthor })
+
+      return bookWithAuthor
     },
     editAuthor: async (_, args, context) => {
       if (!context.currentUser) {
@@ -115,6 +120,11 @@ const resolvers = {
   Author: {
     async bookCount(root) {
       return await Book.countDocuments({ author: root._id })
+    }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator('BOOK_ADDED')
     }
   }
 }
