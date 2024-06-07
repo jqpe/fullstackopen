@@ -3,23 +3,11 @@ import { useState } from 'react'
 
 import { useAuth } from '../hooks/useAuth'
 import { useField } from '../hooks/useField'
-import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
+import { ADD_BOOK, ALL_AUTHORS } from '../queries'
 
 const NewBook = () => {
   const [user] = useAuth()
   const [addBook] = useMutation(ADD_BOOK, {
-    // following the instructions in
-    // https://fullstackopen.com/en/part8/login_and_updating_the_cache#updating-cache-revisited
-    // did not work for me, and instead example in
-    // https://www.apollographql.com/docs/react/api/cache/InMemoryCache/#optimistic
-    // works as intended
-    update: (cache, { data: { addBook } }) => {
-      const query = ALL_BOOKS
-      const { allBooks } = cache.readQuery({ query })
-      allBooks.push(addBook)
-      cache.writeQuery({ query, data: allBooks })
-    },
-
     refetchQueries: [{ query: ALL_AUTHORS }]
   })
 
