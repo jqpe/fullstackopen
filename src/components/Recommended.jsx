@@ -1,12 +1,11 @@
 import { useQuery } from '@apollo/client'
-import { useContext } from 'react'
 
-import AuthContext from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import { ALL_BOOKS, ME } from '../queries'
 import BookTable from './BookTable'
 
 export default function Recommendations() {
-  const user = useContext(AuthContext)
+  const [user] = useAuth()
 
   const meQuery = useQuery(ME)
   const me = meQuery.data?.me

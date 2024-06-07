@@ -1,12 +1,12 @@
 import { useMutation } from '@apollo/client'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 
-import AuthContext from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import { useField } from '../hooks/useField'
 import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
 
 const NewBook = () => {
-  const user = useContext(AuthContext)
+  const [user] = useAuth()
   const [addBook] = useMutation(ADD_BOOK, {
     // following the instructions in
     // https://fullstackopen.com/en/part8/login_and_updating_the_cache#updating-cache-revisited

@@ -1,9 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client'
 
+import { useAuth } from '../hooks/useAuth'
 import { useField } from '../hooks/useField'
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
-import { useContext } from 'react'
-import AuthContext from '../context/AuthContext'
 
 const Authors = () => {
   const result = useQuery(ALL_AUTHORS)
@@ -11,7 +10,7 @@ const Authors = () => {
     refetchQueries: [{ query: ALL_AUTHORS }]
   })
   const authors = result.data?.allAuthors ?? []
-  const user = useContext(AuthContext)
+  const [user] = useAuth()
 
   const name = useField('name', authors.at(0)?.name)
   const born = useField('born')

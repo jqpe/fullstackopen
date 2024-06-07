@@ -1,6 +1,6 @@
 import {
-  ApolloClient,
   ApolloProvider as _ApolloProvider,
+  ApolloClient,
   createHttpLink,
   InMemoryCache,
   split
@@ -10,11 +10,10 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { createClient } from 'graphql-ws'
 
-import { useContext } from 'react'
-import AuthContext from './AuthContext'
+import { useAuth } from '../hooks/useAuth'
 
 export default function ApolloProvider({ children }) {
-  const user = useContext(AuthContext)
+  const [user] = useAuth()
 
   const authLink = setContext((_, { headers }) => {
     const token = user.token
