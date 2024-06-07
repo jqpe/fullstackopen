@@ -104,7 +104,7 @@ const resolvers = {
     me: async (_, __, context) => {
       // we could create a user named "undefined" and view it's data
       // without credentials
-      if (context.currentUser) {
+      if (!context.currentUser || context.currentUser === 'undefined') {
         return null
       }
 
@@ -141,7 +141,7 @@ const resolvers = {
       )
       const book = await Book.create({ ...args, author: author._id })
 
-      return book
+      return book.populate("author")
     },
     editAuthor: async (_, args, context) => {
       if (!context.currentUser) {
