@@ -5,7 +5,7 @@ export const useField = (name, defaultValue) => {
   const [value, setValue] = useState('')
 
   useEffect(() => {
-    setValue(defaultValue)
+    if (defaultValue) setValue(defaultValue)
   }, [defaultValue])
 
   const onChange = event => {

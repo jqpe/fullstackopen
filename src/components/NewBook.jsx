@@ -1,10 +1,12 @@
 import { useMutation } from '@apollo/client'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
-import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
+import AuthContext from '../context/AuthContext'
 import { useField } from '../hooks/useField'
+import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
 
 const NewBook = () => {
+  const user = useContext(AuthContext)
   const [addBook] = useMutation(ADD_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
   })
@@ -15,6 +17,10 @@ const NewBook = () => {
   const genre = useField('genre')
 
   const [genres, setGenres] = useState([])
+
+  if (!user.token) {
+    return 'you have to login to create books'
+  }
 
   const submit = async event => {
     event.preventDefault()

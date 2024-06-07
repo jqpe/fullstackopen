@@ -2,6 +2,8 @@ import { useMutation, useQuery } from '@apollo/client'
 
 import { useField } from '../hooks/useField'
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
+import { useContext } from 'react'
+import AuthContext from '../context/AuthContext'
 
 const Authors = () => {
   const result = useQuery(ALL_AUTHORS)
@@ -9,6 +11,7 @@ const Authors = () => {
     refetchQueries: [{ query: ALL_AUTHORS }]
   })
   const authors = result.data?.allAuthors ?? []
+  const user = useContext(AuthContext)
 
   const name = useField('name', authors.at(0)?.name)
   const born = useField('born')
@@ -32,20 +35,27 @@ const Authors = () => {
       <h2>authors</h2>
       <Table authors={authors} />
       <h3>Set birth year</h3>
+
+      {user.token ? null : (
+        <strong>You have to be logged in to edit authors</strong>
+      )}
+
       <form onSubmit={onUpdateAuthor}>
-        <div>
-          <label htmlFor="name">name</label>
-          <select autoComplete="off" {...name.field}>
-            {authors.map(author => (
-              <option key={author.name}>{author.name}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="born">born</label>
-          <input type="number" {...born.field} />
-        </div>
-        <button type="submit">update author</button>
+        <fieldset disabled={!user.token}>
+          <div>
+            <label htmlFor="name">name</label>
+            <select autoComplete="off" {...name.field}>
+              {authors.map(author => (
+                <option key={author.name}>{author.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="born">born</label>
+            <input type="number" {...born.field} />
+          </div>
+          <button type="submit">update author</button>
+        </fieldset>
       </form>
     </div>
   )
