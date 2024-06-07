@@ -1,7 +1,8 @@
 import { useQuery } from '@apollo/client'
+import { useSubscription } from '@apollo/client'
 
 import { useState } from 'react'
-import { ALL_BOOKS } from '../queries'
+import { ALL_BOOKS, BOOK_ADDED } from '../queries'
 import FilterByGenre from './FilterByGenre'
 import BookTable from './BookTable'
 
@@ -12,6 +13,28 @@ const Books = () => {
       genre: selectedGenre || null
     }
   })
+
+  // TODO: missing notification
+  useSubscription(BOOK_ADDED, {
+    onData: ({ client, data }) => {
+      const bookAdded = data.data.bookAdded
+
+      client.cache.updateQuery(
+        {
+          query: ALL_BOOKS,
+          variables: {
+            genre: selectedGenre || null
+          }
+        },
+        ({ allBooks }) => {
+          return {
+            allBooks: allBooks.concat(bookAdded)
+          }
+        }
+      )
+    }
+  })
+
   const books = result.data?.allBooks ?? []
 
   const allGenres = new Set(books.flatMap(book => book.genres))
