@@ -6,6 +6,7 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import LoginForm from './components/LoginForm'
 import NewBook from './components/NewBook'
+import Recommendations from './components/Recommended'
 import AuthContext from './context/AuthContext'
 
 const initialUser = { token: localStorage.getItem('auth-token') }
@@ -27,6 +28,7 @@ const App = () => {
         <nav style={{ display: 'flex', gap: 10 }}>
           <Link to="/">books</Link>
           <Link to="/authors">authors</Link>
+          {user.token && <Link to="/recommendations">recommendations</Link>}
           {user.token && <Link to="/new-book">new book</Link>}
           {!user.token && <Link to="/login">login</Link>}
           {user.token && (
@@ -44,6 +46,7 @@ const App = () => {
           <Route path="/" element={<Books />} />
           <Route path="/authors" element={<Authors />} />
           <Route path="/new-book" element={<NewBook />} />
+          <Route path="/recommendations" element={<Recommendations />} />
           <Route
             path="/login"
             element={
