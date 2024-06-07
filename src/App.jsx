@@ -1,4 +1,3 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import { useState } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 
@@ -8,23 +7,16 @@ import LoginForm from './components/LoginForm'
 import NewBook from './components/NewBook'
 import Recommendations from './components/Recommended'
 import AuthContext from './context/AuthContext'
+import ApolloProvider from './context/ApolloProvider'
 
 const initialUser = { token: localStorage.getItem('auth-token') }
 
 const App = () => {
   const [user, setUser] = useState(initialUser)
 
-  const client = new ApolloClient({
-    uri: 'http://localhost:4000',
-    headers: {
-      Authorization: user.token ? `Bearer ${user.token}` : undefined
-    },
-    cache: new InMemoryCache()
-  })
-
   return (
-    <ApolloProvider client={client}>
-      <AuthContext.Provider value={user}>
+    <AuthContext.Provider value={user}>
+      <ApolloProvider>
         <nav style={{ display: 'flex', gap: 10 }}>
           <Link to="/">books</Link>
           <Link to="/authors">authors</Link>
@@ -59,8 +51,8 @@ const App = () => {
             }
           />
         </Routes>
-      </AuthContext.Provider>
-    </ApolloProvider>
+      </ApolloProvider>
+    </AuthContext.Provider>
   )
 }
 
