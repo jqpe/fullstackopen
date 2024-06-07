@@ -8,7 +8,19 @@ import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
 const NewBook = () => {
   const user = useContext(AuthContext)
   const [addBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
+    // following the instructions in
+    // https://fullstackopen.com/en/part8/login_and_updating_the_cache#updating-cache-revisited
+    // did not work for me, and instead example in
+    // https://www.apollographql.com/docs/react/api/cache/InMemoryCache/#optimistic
+    // works as intended
+    update: (cache, { data: { addBook } }) => {
+      const query = ALL_BOOKS
+      const { allBooks } = cache.readQuery({ query })
+      allBooks.push(addBook)
+      cache.writeQuery({ query, data: allBooks })
+    },
+
+    refetchQueries: [{ query: ALL_AUTHORS }]
   })
 
   const title = useField('title')

@@ -9,7 +9,7 @@ const Books = () => {
   const [selectedGenre, setSelectedGenre] = useState('')
   const result = useQuery(ALL_BOOKS, {
     variables: {
-      genre: selectedGenre ?? null
+      genre: selectedGenre || null
     }
   })
   const books = result.data?.allBooks ?? []
