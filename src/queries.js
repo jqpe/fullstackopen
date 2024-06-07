@@ -21,6 +21,7 @@ export const ADD_BOOK = gql`
 export const ALL_BOOKS = gql`
   query {
     allBooks {
+      genres
       title
       author {
         name
