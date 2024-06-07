@@ -6,10 +6,14 @@ import FilterByGenre from './FilterByGenre'
 import BookTable from './BookTable'
 
 const Books = () => {
-  const result = useQuery(ALL_BOOKS)
+  const [selectedGenre, setSelectedGenre] = useState('')
+  const result = useQuery(ALL_BOOKS, {
+    variables: {
+      genre: selectedGenre ?? null
+    }
+  })
   const books = result.data?.allBooks ?? []
 
-  const [selectedGenre, setSelectedGenre] = useState('')
   const allGenres = new Set(books.flatMap(book => book.genres))
 
   return (

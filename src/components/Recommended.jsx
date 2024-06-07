@@ -2,22 +2,29 @@ import { useQuery } from '@apollo/client'
 import { useContext } from 'react'
 
 import AuthContext from '../context/AuthContext'
-import { RECOMMENDATIONS } from '../queries'
+import { ALL_BOOKS, ME } from '../queries'
 import BookTable from './BookTable'
 
 export default function Recommendations() {
   const user = useContext(AuthContext)
-  const result = useQuery(RECOMMENDATIONS)
 
-  const { me, allBooks } = result.data ?? {}
+  const meQuery = useQuery(ME)
+  const me = meQuery.data?.me
 
-  const userBooks = allBooks ?? []
+  const allBooksQuery = useQuery(ALL_BOOKS, {
+    variables: {
+      genre: me?.favoriteGenre
+    },
+    skip: !me?.favoriteGenre
+  })
 
-  if (result.loading) {
+  const books = allBooksQuery.data?.allBooks ?? []
+
+  if (meQuery.loading || allBooksQuery.loading) {
     return 'loading...'
   }
 
-  if (!user.token || userBooks.length === 0) {
+  if (!user.token || books.length === 0) {
     return 'you have no personalized recommendations'
   }
 
@@ -29,7 +36,7 @@ export default function Recommendations() {
         books in your favorite genre <b>{me.favoriteGenre}</b>
       </p>
 
-      <BookTable books={userBooks} selectedGenre={me.favoriteGenre} />
+      <BookTable books={books} selectedGenre={me.favoriteGenre} />
     </>
   )
 }

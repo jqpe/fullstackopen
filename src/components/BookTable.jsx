@@ -1,4 +1,4 @@
-export default function BookTable({ books, selectedGenre }) {
+export default function BookTable({ books }) {
   return (
     <table>
       <tbody>
@@ -7,17 +7,13 @@ export default function BookTable({ books, selectedGenre }) {
           <th>author</th>
           <th>published</th>
         </tr>
-        {books
-          .filter(book => {
-            return selectedGenre ? book.genres.includes(selectedGenre) : true
-          })
-          .map(a => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
-            </tr>
-          ))}
+        {books.map(a => (
+          <tr key={a.title}>
+            <td>{a.title}</td>
+            <td>{a.author.name}</td>
+            <td>{a.published}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
   )
