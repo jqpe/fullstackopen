@@ -14,7 +14,7 @@ When you want to develop backend and frontend at the same time use [git worktree
 
 > [!NOTE]
 > pnpm was used to install dependencies, but using it not strictly necessary and npm ought to work as well.
-> If you wish to use pnpm run `corepack enable` followed by `corepack install pnpm@9.2.0` for best results. [Corepack](https://nodejs.org/api/corepack.html) is installed by default on recent Node.js versions.
+> If you wish to use pnpm run `corepack enable` followed by `corepack use pnpm@9.2.0` for best results. [Corepack](https://nodejs.org/api/corepack.html) is installed by default on recent Node.js versions.
 
 ## Branches
 
